@@ -2,12 +2,9 @@ package server
 
 import (
 	"encoding/json"
-	// "io/ioutil"
 	"log"
 	"net/http"
-
 	"github.com/Kebalepile/movie_info_api/read"
-	// "strings"
 )
 
 // Holds allowed domains.
@@ -103,6 +100,7 @@ func trendingHandler(res http.ResponseWriter, req *http.Request) {
 
 		for _, file := range files {
 			go func(filename string) {
+
 				contents, err := read.ReadFileContents(filename)
 				if err != nil {
 
@@ -113,18 +111,22 @@ func trendingHandler(res http.ResponseWriter, req *http.Request) {
 			}(file)
 		}
 
-		var json_data map[string]interface{}
+		// var contents_from_files [][]byte
 
+		var files_data []map[string]any
 		for range files {
-			file_contents := <-fileContentsChan
-			err := json.Unmarshal(file_contents, &json_data)
+			var file_data map[string]any
+			err := json.Unmarshal(<-fileContentsChan, &file_data)
 			if err != nil {
 				http.Error(res, "Failed to read file contents", http.StatusInternalServerError)
 				return
 			}
+
+			files_data = append(files_data, file_data)
+
 		}
 
-		response, err := json.Marshal(json_data)
+		response, err := json.Marshal(files_data)
 		if err != nil {
 			http.Error(res, "Failed to stringify response", http.StatusInternalServerError)
 			return
@@ -185,18 +187,21 @@ func recommendedHandler(res http.ResponseWriter, req *http.Request) {
 			}(file)
 		}
 
-		var json_data map[string]interface{}
+		var files_data []map[string]interface{}
 
 		for range files {
-			file_contents := <-fileContentsChan
-			err := json.Unmarshal(file_contents, &json_data)
+
+			var file_data map[string]interface{}
+			err := json.Unmarshal(<-fileContentsChan, &file_data)
 			if err != nil {
 				http.Error(res, "Failed to read file contents", http.StatusInternalServerError)
 				return
 			}
+
+			files_data = append(files_data, file_data)
 		}
 
-		response, err := json.Marshal(json_data)
+		response, err := json.Marshal(files_data)
 		if err != nil {
 			http.Error(res, "Failed to marshel response", http.StatusInternalServerError)
 			return

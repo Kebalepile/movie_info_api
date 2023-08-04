@@ -25,7 +25,7 @@ func findJsonFiles() (map[string][]string, error) {
 		}
 
 		if !info.IsDir() && filepath.Ext(file_path) == ".json" {
-
+			
 			if strings.Contains(info.Name(), "searched") {
 				must_watch := json_files["must_watch"]
 				json_files["must_watch"] = append(must_watch, file_path)
@@ -33,7 +33,9 @@ func findJsonFiles() (map[string][]string, error) {
 			} else if strings.Contains(info.Name(), "trending") {
 
 				trending := json_files["trending"]
+				
 				json_files["trending"] = append(trending, file_path)
+				
 			}
 
 		}
@@ -52,6 +54,7 @@ func findJsonFiles() (map[string][]string, error) {
 
 /*
 *@description read content of *.json files
+@returns contents of file in slice of byte
  */
 
 func ReadFileContents(filename string) ([]byte, error) {
@@ -62,7 +65,10 @@ func ReadFileContents(filename string) ([]byte, error) {
 
 	return contents, nil
 }
-
+/*
+*@description Get file names of *.json files 
+*@return slice of *.json file names
+*/
 func GetFiles(key string) ([]string, error) {
 	json_files, err := findJsonFiles()
 	if err != nil {
