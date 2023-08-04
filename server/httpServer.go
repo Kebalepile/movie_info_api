@@ -2,7 +2,7 @@ package server
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	// "io/ioutil"
 	"log"
 	"net/http"
 
@@ -26,9 +26,9 @@ type err_message struct {
 }
 
 // Api end points
-func searchHandler(res http.ResponseWriter, req *http.Request) {
-	// Set response headers
-	res.Header().Set("Content-Type", "application/json")
+func requestHandler(res http.ResponseWriter, req *http.Request) {
+	
+	
 	// origin := req.Header.Get("Referer")
 
 	//for production use only
@@ -41,37 +41,40 @@ func searchHandler(res http.ResponseWriter, req *http.Request) {
 		http.Error(res, "Forbidden Not Allowed Origin", http.StatusForbidden)
 		return
 	}
+	if req.Method != http.MethodPost {
+		http.Error(res, "Method not Allowed", http.StatusMethodNotAllowed)
+		return
+	}
 
 	if contentType := req.Header.Get("Content-Type"); contentType != "application/json" {
 		http.Error(res, "Content Type: "+contentType+" is not allowed.", http.StatusNotAcceptable)
 		return
 	}
+	
 
-	// Read request data
-	body, err := ioutil.ReadAll(req.Body)
-
+	var end_user_request read.Request
+	err := json.NewDecoder(req.Body).Decode(&end_user_request)
 	if err != nil {
-		http.Error(res, "Failed to read request Body", http.StatusInternalServerError)
+		http.Error(res,"Invalid JSON payload", http.StatusBadRequest)
 		return
 	}
 
-	// Parse search query
-	var searchQuery string
-	err = json.Unmarshal(body, &searchQuery)
+	log.Println("Received data: ", end_user_request)
+
+	message, err := read.EndUserRequest(end_user_request)
 	if err != nil {
-		http.Error(res, "Failed to parse request body", http.StatusBadRequest)
+		http.Error(res, "Failed to log end-user request", http.StatusInternalServerError)
 		return
 	}
-	log.Println("Search Query is: ", searchQuery)
+	log.Println(message)
 
-	json_data := map[string]string{"message": "Looking for something ?"}
-
-	response, err := json.Marshal(json_data)
+	response, err := json.Marshal(message)
 	if err != nil {
 		http.Error(res, "Failed to marshel response", http.StatusInternalServerError)
 		return
 	}
-
+	// Set response headers
+	res.Header().Set("Content-Type", "application/json")
 	// ser status code
 	res.WriteHeader(http.StatusOK)
 	// send json as reponse
@@ -102,7 +105,6 @@ func trendingHandler(res http.ResponseWriter, req *http.Request) {
 	}
 
 	if files != nil {
-		// log.Println(files)
 		fileContentsChan := make(chan []byte)
 
 		for _, file := range files {
@@ -253,7 +255,7 @@ func Run() {
 	// Create Http server
 	serveMux := http.NewServeMux()
 	serveMux.HandleFunc("/", homeHandler)
-	serveMux.HandleFunc("/search", searchHandler)
+	serveMux.HandleFunc("/request", requestHandler)
 	serveMux.HandleFunc("/trending", trendingHandler)
 	serveMux.HandleFunc("/recommended", recommendedHandler)
 

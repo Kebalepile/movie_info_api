@@ -3,7 +3,6 @@ package read
 import (
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
 )
@@ -13,9 +12,9 @@ var file_path = filepath.Join("files", "requests", "search_requests.json")
 type search_request struct {
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
-	Requests    []request `json:"requests"`
+	Requests    []Request `json:"requests"`
 }
-type request struct {
+type Request struct {
 	Date        string `json:"date"`
 	Query       string `json:"query"`
 	Email       string `json:"email"`
@@ -51,29 +50,30 @@ func findJsonFile() search_request {
 /*
 *@description append end-users request to search requests
  */
-func EndUserRequest() {
+func EndUserRequest(end_user_request Request) (map[string]string, error) {
 	search_requests := findJsonFile()
 
-	// new data
-	end_user_request := request{
-		Date:        "2023/08/04",
-		Query:       "John Wick Chapter 4",
-		Email:       "sage@xam.com",
-		MediaHandle: "twiter.com/sage",
-	}
+	// // new data
+	// end_user_request := request{
+	// 	Date:        "2023/08/04",
+	// 	Query:       "John Wick Chapter 4",
+	// 	Email:       "sage@xam.com",
+	// 	MediaHandle: "twiter.com/sage",
+	// }
 
 	requests := search_requests.Requests
 	search_requests.Requests = append(requests, end_user_request)
 	contents_bytes, err := json.Marshal(search_requests)
 	if err != nil {
-		panic(err)
+
+		return nil, err
 	}
 
-	
 	err = ioutil.WriteFile(file_path, contents_bytes, 0644)
 	if err != nil {
-		panic(err)
+
+		return nil, err
 	}
 
-	log.Println("Data Written to out file successfully")
+	return map[string]string{"msg": "Your request has been successfully logged, will get back to you within 48hours on given"}, nil
 }
