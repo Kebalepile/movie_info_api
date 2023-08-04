@@ -77,7 +77,6 @@ func GetFiles(key string) ([]string, error) {
 	}
 }
 
-
 func ReadAndPrintJSONFiles() {
 	json_files, err := findJsonFiles()
 	if err != nil {

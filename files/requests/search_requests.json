@@ -1,12 +1,5 @@
 {
   "name": "search_requests",
   "description": "store end-user requests",
-  "requests": [
-    {
-      "date": "2023/08/04",
-      "query": "barbie",
-      "email": "sage@xam.com",
-      "mediaHandle": "twiter.com/sage"
-    }
-  ]
+  "requests": []
 }

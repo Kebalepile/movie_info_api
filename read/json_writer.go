@@ -53,15 +53,8 @@ func findJsonFile() search_request {
 func EndUserRequest(end_user_request Request) (map[string]string, error) {
 	search_requests := findJsonFile()
 
-	// // new data
-	// end_user_request := request{
-	// 	Date:        "2023/08/04",
-	// 	Query:       "John Wick Chapter 4",
-	// 	Email:       "sage@xam.com",
-	// 	MediaHandle: "twiter.com/sage",
-	// }
-
 	requests := search_requests.Requests
+
 	search_requests.Requests = append(requests, end_user_request)
 	contents_bytes, err := json.Marshal(search_requests)
 	if err != nil {
