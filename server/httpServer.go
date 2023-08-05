@@ -5,7 +5,9 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"strings"
+
+	"github.com/Kebalepile/movie_info_api/read"
+	// "strings"
 )
 
 // Holds allowed domains.
@@ -16,18 +18,7 @@ const allowedDomain string = "locahost:5000"
 
 var allowedDomains = map[string]bool{
 	"127.0.0.1": true,
-	"[::1]": true,
-}
-
-type recipe struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
-}
-
-var recipes = []recipe{
-	{ID: 1, Name: "mango bread"},
-	{2, "str frie"},
-	{ID: 3, Name: "Fish & Chips"},
+	"[::1]":     true,
 }
 
 // Api end points
@@ -54,13 +45,13 @@ func searchHandler(res http.ResponseWriter, req *http.Request) {
 	}
 
 	if contentType := req.Header.Get("Content-Type"); contentType != "application/json" {
-		http.Error(res, "Content Type: " + contentType + " is not allowed.", http.StatusNotAcceptable)
+		http.Error(res, "Content Type: "+contentType+" is not allowed.", http.StatusNotAcceptable)
 		return
 	}
 
 	// Read request data
 	body, err := ioutil.ReadAll(req.Body)
-	
+
 	if err != nil {
 		http.Error(res, "Failed to read request Body", http.StatusInternalServerError)
 		return
@@ -74,12 +65,22 @@ func searchHandler(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 	// Perform search
-	var searchResult = []recipe{}
+	var searchResult = []string{"okoko"}
 
-	for _, r := range recipes {
-		if strings.Contains(strings.ToLower(r.Name), strings.ToLower(searchQuery)) {
-			searchResult = append(searchResult, r)
-		}
+	// for _, r := range recipes {
+	// 	if strings.Contains(strings.ToLower(r.Name), strings.ToLower(searchQuery)) {
+	// 		searchResult = append(searchResult, r)
+	// 	}
+	// }
+	files, err := read.GetFiles("must_watch")
+	if err != nil {
+		log.Println(err)
+		http.Error(res, "Failed to get must watch files", http.StatusInternalServerError)
+		return
+	}
+	log.Println(files)
+	if files != nil {
+		log.Println(files)
 	}
 	// Send response
 	response, err := json.Marshal(searchResult)
@@ -95,8 +96,68 @@ func searchHandler(res http.ResponseWriter, req *http.Request) {
 	res.Write(response)
 
 }
-func homeHandler(res http.ResponseWriter, req *http.Request) {
+func trendingHandler(res http.ResponseWriter, req *http.Request) {
+
+	// origin := req.Header.Get("Referer")
+
+	//for production use only
+	origin := req.RemoteAddr
+	log.Println("request origin: ", origin)
 	
+	remoteIp := origin[:len(origin)-6] // [::1]
+
+	if !allowedDomains[remoteIp] {
+		http.Error(res, "Forbidden Not Allowed Origin", http.StatusForbidden)
+		return
+	}
+
+	files, err := read.GetFiles("trending")
+	if err != nil {
+		log.Println(err)
+		http.Error(res, "Failed to get trending files", http.StatusInternalServerError)
+		return
+	}
+	log.Println(files)
+	if files != nil {
+		log.Println(files)
+		fileContentsChan := make(chan []byte)
+
+		for _, file := range files {
+			go func(filename string) {
+				contents, err := read.ReadFileContents(filename)
+				if err != nil {
+					log.Println("Error while trying to read " + filename + " file contents")
+					log.Println(err)
+					http.Error(res, "Failed to file Contents", http.StatusInternalServerError)
+					return
+				}
+				fileContentsChan <- contents
+			}(file)
+		}
+
+		var file_contents string
+
+		for range files {
+			contents :=  <-fileContentsChan
+			file_contents = string(contents)
+		}
+
+		response, err := json.Marshal(file_contents)
+		if err != nil {
+			http.Error(res, "Failed to marshel response", http.StatusInternalServerError)
+			return
+		}
+		// Set response headers
+		res.Header().Set("Content-Type", "application/json")
+		// Set status code
+		res.WriteHeader(http.StatusOK)
+		// send json as reponse
+		res.Write(response)
+	}
+
+}
+func homeHandler(res http.ResponseWriter, req *http.Request) {
+
 	// origin := req.Header.Get("Origin")
 	// log.Println("api called from: ", origin)
 	origin := req.RemoteAddr
@@ -106,7 +167,7 @@ func homeHandler(res http.ResponseWriter, req *http.Request) {
 		http.Error(res, "Failed to marshal response", http.StatusInternalServerError)
 		return
 	}
-	
+
 	res.Header().Set("Content-Type", "application/json")
 	res.WriteHeader(http.StatusOK)
 	res.Write(resBody)
@@ -118,7 +179,8 @@ func Run() {
 	serveMux := http.NewServeMux()
 	serveMux.HandleFunc("/", homeHandler)
 	serveMux.HandleFunc("/search", searchHandler)
+	serveMux.HandleFunc("/trending",trendingHandler)
 
-	log.Println("Golang API server listeing on port 3000")
-	log.Fatal(http.ListenAndServe(":3000", serveMux))
+	log.Println("Golang API server listeing on port 8080")
+	log.Fatal(http.ListenAndServe(":8080", serveMux))
 }
