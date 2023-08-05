@@ -62,63 +62,20 @@ func searchHandler(res http.ResponseWriter, req *http.Request) {
 		http.Error(res, "Failed to parse request body", http.StatusBadRequest)
 		return
 	}
-	files, err := read.GetFiles("must_watch")
+	log.Println("Search Query is: ", searchQuery)
+
+	json_data := map[string]string{"message": "Looking for something ?"}
+
+	response, err := json.Marshal(json_data)
 	if err != nil {
-		log.Println(err)
-		http.Error(res, "Failed to get trending files", http.StatusInternalServerError)
+		http.Error(res, "Failed to marshel response", http.StatusInternalServerError)
 		return
 	}
 
-	if files != nil {
-
-		fileContentsChan := make(chan []byte)
-
-		for _, file := range files {
-			go func(filename string) {
-				contents, err := read.ReadFileContents(filename)
-				if err != nil {
-					log.Println("Error while trying to read " + filename + " file contents")
-					log.Println(err)
-					http.Error(res, "Failed to  read file contents", http.StatusInternalServerError)
-					return
-				}
-				fileContentsChan <- contents
-			}(file)
-		}
-
-		var json_data map[string]interface{}
-
-		for contents := range fileContentsChan {
-			err := json.Unmarshal(contents, &json_data)
-			if err != nil {
-				http.Error(res, "Failed to  read file contents", http.StatusInternalServerError)
-				return
-			}
-		}
-
-		response, err := json.Marshal(json_data)
-		if err != nil {
-			http.Error(res, "Failed to marshel response", http.StatusInternalServerError)
-			return
-		}
-
-		// ser status code
-		res.WriteHeader(http.StatusOK)
-		// send json as reponse
-		res.Write(response)
-	} else {
-
-		response, err := json.Marshal(err_message{"could not find must watch files"})
-		if err != nil {
-			http.Error(res, "Failed to marshel response", http.StatusInternalServerError)
-			return
-		}
-
-		// Set status code
-		res.WriteHeader(http.StatusInternalServerError)
-		// send json as reponse
-		res.Write(response)
-	}
+	// ser status code
+	res.WriteHeader(http.StatusOK)
+	// send json as reponse
+	res.Write(response)
 
 }
 func trendingHandler(res http.ResponseWriter, req *http.Request) {
@@ -143,7 +100,7 @@ func trendingHandler(res http.ResponseWriter, req *http.Request) {
 		http.Error(res, "Failed to get trending files", http.StatusInternalServerError)
 		return
 	}
-	
+
 	if files != nil {
 		// log.Println(files)
 		fileContentsChan := make(chan []byte)
@@ -164,7 +121,7 @@ func trendingHandler(res http.ResponseWriter, req *http.Request) {
 		var json_data map[string]interface{}
 
 		for range files {
-			file_contents := <- fileContentsChan
+			file_contents := <-fileContentsChan
 			err := json.Unmarshal(file_contents, &json_data)
 			if err != nil {
 				http.Error(res, "Failed to  read file contents", http.StatusInternalServerError)
@@ -220,7 +177,7 @@ func recommendedHandler(res http.ResponseWriter, req *http.Request) {
 		http.Error(res, "Failed to get trending files", http.StatusInternalServerError)
 		return
 	}
-	
+
 	if files != nil {
 		// log.Println(files)
 		fileContentsChan := make(chan []byte)
@@ -241,7 +198,7 @@ func recommendedHandler(res http.ResponseWriter, req *http.Request) {
 		var json_data map[string]interface{}
 
 		for range files {
-			file_contents := <- fileContentsChan
+			file_contents := <-fileContentsChan
 			err := json.Unmarshal(file_contents, &json_data)
 			if err != nil {
 				http.Error(res, "Failed to  read file contents", http.StatusInternalServerError)
