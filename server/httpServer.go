@@ -21,22 +21,20 @@ var allowedDomains = map[string]bool{
 	"[::1]":     true,
 }
 
+type err_message struct {
+	Message string
+}
+
 // Api end points
 func searchHandler(res http.ResponseWriter, req *http.Request) {
-
+	// Set response headers
+	res.Header().Set("Content-Type", "application/json")
 	// origin := req.Header.Get("Referer")
 
 	//for production use only
 	origin := req.RemoteAddr
 	log.Println("request origin: ", origin)
-	// log.Println(req.Header)
-	// for production make it https://
-	// if origin == "http://"+allowedDomain {
-	// 	res.Header().Set("Access-Control-Allowed-Origin", origin)
-	// } else {
-	// 	http.Error(res, "Forbidden Not Allowed Origin", http.StatusForbidden)
-	// 	return
-	// }
+
 	remoteIp := origin[:len(origin)-6] // [::1]
 
 	if !allowedDomains[remoteIp] {
@@ -64,62 +62,15 @@ func searchHandler(res http.ResponseWriter, req *http.Request) {
 		http.Error(res, "Failed to parse request body", http.StatusBadRequest)
 		return
 	}
-	// Perform search
-	var searchResult = []string{"okoko"}
-
-	// for _, r := range recipes {
-	// 	if strings.Contains(strings.ToLower(r.Name), strings.ToLower(searchQuery)) {
-	// 		searchResult = append(searchResult, r)
-	// 	}
-	// }
 	files, err := read.GetFiles("must_watch")
-	if err != nil {
-		log.Println(err)
-		http.Error(res, "Failed to get must watch files", http.StatusInternalServerError)
-		return
-	}
-	log.Println(files)
-	if files != nil {
-		log.Println(files)
-	}
-	// Send response
-	response, err := json.Marshal(searchResult)
-	if err != nil {
-		http.Error(res, "Failed to marshel response", http.StatusInternalServerError)
-		return
-	}
-	// Set response headers
-	res.Header().Set("Content-Type", "application/json")
-	// ser status code
-	res.WriteHeader(http.StatusOK)
-	// send json as reponse
-	res.Write(response)
-
-}
-func trendingHandler(res http.ResponseWriter, req *http.Request) {
-
-	// origin := req.Header.Get("Referer")
-
-	//for production use only
-	origin := req.RemoteAddr
-	log.Println("request origin: ", origin)
-	
-	remoteIp := origin[:len(origin)-6] // [::1]
-
-	if !allowedDomains[remoteIp] {
-		http.Error(res, "Forbidden Not Allowed Origin", http.StatusForbidden)
-		return
-	}
-
-	files, err := read.GetFiles("trending")
 	if err != nil {
 		log.Println(err)
 		http.Error(res, "Failed to get trending files", http.StatusInternalServerError)
 		return
 	}
-	log.Println(files)
+
 	if files != nil {
-		log.Println(files)
+
 		fileContentsChan := make(chan []byte)
 
 		for _, file := range files {
@@ -135,22 +86,112 @@ func trendingHandler(res http.ResponseWriter, req *http.Request) {
 			}(file)
 		}
 
-		var file_contents string
+		var json_data map[string]interface{}
 
-		for range files {
-			contents :=  <-fileContentsChan
-			file_contents = string(contents)
+		for contents := range fileContentsChan {
+			err := json.Unmarshal(contents, &json_data)
+			if err != nil {
+				http.Error(res, "Failed to  read file contents", http.StatusInternalServerError)
+				return
+			}
 		}
 
-		response, err := json.Marshal(file_contents)
+		response, err := json.Marshal(json_data)
 		if err != nil {
 			http.Error(res, "Failed to marshel response", http.StatusInternalServerError)
 			return
 		}
-		// Set response headers
-		res.Header().Set("Content-Type", "application/json")
+
+		// ser status code
+		res.WriteHeader(http.StatusOK)
+		// send json as reponse
+		res.Write(response)
+	} else {
+
+		response, err := json.Marshal(err_message{"could not find must watch files"})
+		if err != nil {
+			http.Error(res, "Failed to marshel response", http.StatusInternalServerError)
+			return
+		}
+
+		// Set status code
+		res.WriteHeader(http.StatusInternalServerError)
+		// send json as reponse
+		res.Write(response)
+	}
+
+}
+func trendingHandler(res http.ResponseWriter, req *http.Request) {
+	// Set response headers
+	res.Header().Set("Content-Type", "application/json")
+	// origin := req.Header.Get("Referer")
+
+	//for production use only
+	origin := req.RemoteAddr
+	log.Println("request origin: ", origin)
+
+	remoteIp := origin[:len(origin)-6] // [::1]
+
+	if !allowedDomains[remoteIp] {
+		http.Error(res, "Forbidden Not Allowed Origin", http.StatusForbidden)
+		return
+	}
+
+	files, err := read.GetFiles("trending")
+	if err != nil {
+		log.Println(err)
+		http.Error(res, "Failed to get trending files", http.StatusInternalServerError)
+		return
+	}
+	
+	if files != nil {
+		// log.Println(files)
+		fileContentsChan := make(chan []byte)
+
+		for _, file := range files {
+			go func(filename string) {
+				contents, err := read.ReadFileContents(filename)
+				if err != nil {
+					log.Println("Error while trying to read " + filename + " file contents")
+					log.Println(err)
+					http.Error(res, "Failed to file Contents", http.StatusInternalServerError)
+					return
+				}
+				fileContentsChan <- contents
+			}(file)
+		}
+
+		var json_data map[string]interface{}
+
+		for range files {
+			file_contents := <- fileContentsChan
+			err := json.Unmarshal(file_contents, &json_data)
+			if err != nil {
+				http.Error(res, "Failed to  read file contents", http.StatusInternalServerError)
+				return
+			}
+		}
+
+		response, err := json.Marshal(json_data)
+		if err != nil {
+			http.Error(res, "Failed to marshel response", http.StatusInternalServerError)
+			return
+		}
+
 		// Set status code
 		res.WriteHeader(http.StatusOK)
+		// send json as reponse
+		res.Write(response)
+	} else {
+
+		response, err := json.Marshal(err_message{"could not find trending files"})
+		if err != nil {
+			http.Error(res, "Failed to marshel response", http.StatusInternalServerError)
+			return
+		}
+
+		// Set status code
+		res.WriteHeader(http.StatusInternalServerError)
 		// send json as reponse
 		res.Write(response)
 	}
@@ -179,7 +220,7 @@ func Run() {
 	serveMux := http.NewServeMux()
 	serveMux.HandleFunc("/", homeHandler)
 	serveMux.HandleFunc("/search", searchHandler)
-	serveMux.HandleFunc("/trending",trendingHandler)
+	serveMux.HandleFunc("/trending", trendingHandler)
 
 	log.Println("Golang API server listeing on port 8080")
 	log.Fatal(http.ListenAndServe(":8080", serveMux))

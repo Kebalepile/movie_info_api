@@ -11,7 +11,7 @@ import (
 /*
 * @description searchs for *.json files
  */
-func FindJsonFiles() (map[string][]string, error) {
+func findJsonFiles() (map[string][]string, error) {
 
 	json_files := map[string][]string{
 		"must_watch": []string{},
@@ -63,15 +63,30 @@ func ReadFileContents(filename string) ([]byte, error) {
 	return contents, nil
 }
 
+func GetFiles(key string) ([]string, error) {
+	json_files, err := findJsonFiles()
+	if err != nil {
+		log.Println("Error while  searching for *.json files -> ", err)
+		return nil, err
+	}
+
+	if value, exists := json_files[key]; exists && value != nil {
+		return value, nil
+	} else {
+		return nil, nil
+	}
+}
+
+
 func ReadAndPrintJSONFiles() {
-	json_files, err := FindJsonFiles()
+	json_files, err := findJsonFiles()
 	if err != nil {
 		log.Println("Error while  searching for *.json files -> ", err)
 		return
 	}
 	fileContentChan := make(chan []byte)
 	for _, files := range json_files {
-		// log.Println("Reading " + k + " files")
+
 		for _, file := range files {
 			go func(filename string) {
 				contents, err := ReadFileContents(filename)

@@ -1,11 +1,9 @@
 package main
 
 import (
-	// "github.com/Kebalepile/movie_info_api/server"
-	"github.com/Kebalepile/movie_info_api/read"
+	"github.com/Kebalepile/movie_info_api/server"
 )
 
 func main() {
-	// server.Run()
-	read.ReadAndPrintJSONFiles()
+	server.Run()
 }
