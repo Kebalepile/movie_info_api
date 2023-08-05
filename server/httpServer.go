@@ -79,7 +79,7 @@ func searchHandler(res http.ResponseWriter, req *http.Request) {
 				if err != nil {
 					log.Println("Error while trying to read " + filename + " file contents")
 					log.Println(err)
-					http.Error(res, "Failed to file Contents", http.StatusInternalServerError)
+					http.Error(res, "Failed to  read file contents", http.StatusInternalServerError)
 					return
 				}
 				fileContentsChan <- contents
@@ -154,7 +154,84 @@ func trendingHandler(res http.ResponseWriter, req *http.Request) {
 				if err != nil {
 					log.Println("Error while trying to read " + filename + " file contents")
 					log.Println(err)
-					http.Error(res, "Failed to file Contents", http.StatusInternalServerError)
+					http.Error(res, "Failed to  read file contents", http.StatusInternalServerError)
+					return
+				}
+				fileContentsChan <- contents
+			}(file)
+		}
+
+		var json_data map[string]interface{}
+
+		for range files {
+			file_contents := <- fileContentsChan
+			err := json.Unmarshal(file_contents, &json_data)
+			if err != nil {
+				http.Error(res, "Failed to  read file contents", http.StatusInternalServerError)
+				return
+			}
+		}
+
+		response, err := json.Marshal(json_data)
+		if err != nil {
+			http.Error(res, "Failed to marshel response", http.StatusInternalServerError)
+			return
+		}
+
+		// Set status code
+		res.WriteHeader(http.StatusOK)
+		// send json as reponse
+		res.Write(response)
+	} else {
+
+		response, err := json.Marshal(err_message{"could not find trending files"})
+		if err != nil {
+			http.Error(res, "Failed to marshel response", http.StatusInternalServerError)
+			return
+		}
+
+		// Set status code
+		res.WriteHeader(http.StatusInternalServerError)
+		// send json as reponse
+		res.Write(response)
+	}
+
+}
+
+func recommendedHandler(res http.ResponseWriter, req *http.Request) {
+	// Set response headers
+	res.Header().Set("Content-Type", "application/json")
+	// origin := req.Header.Get("Referer")
+
+	//for production use only
+	origin := req.RemoteAddr
+	log.Println("request origin: ", origin)
+
+	remoteIp := origin[:len(origin)-6] // [::1]
+
+	if !allowedDomains[remoteIp] {
+		http.Error(res, "Forbidden Not Allowed Origin", http.StatusForbidden)
+		return
+	}
+
+	files, err := read.GetFiles("must_watch")
+	if err != nil {
+		log.Println(err)
+		http.Error(res, "Failed to get trending files", http.StatusInternalServerError)
+		return
+	}
+	
+	if files != nil {
+		// log.Println(files)
+		fileContentsChan := make(chan []byte)
+
+		for _, file := range files {
+			go func(filename string) {
+				contents, err := read.ReadFileContents(filename)
+				if err != nil {
+					log.Println("Error while trying to read " + filename + " file contents")
+					log.Println(err)
+					http.Error(res, "Failed to  read file contents", http.StatusInternalServerError)
 					return
 				}
 				fileContentsChan <- contents
@@ -221,6 +298,7 @@ func Run() {
 	serveMux.HandleFunc("/", homeHandler)
 	serveMux.HandleFunc("/search", searchHandler)
 	serveMux.HandleFunc("/trending", trendingHandler)
+	serveMux.HandleFunc("/recommended", recommendedHandler)
 
 	log.Println("Golang API server listeing on port 8080")
 	log.Fatal(http.ListenAndServe(":8080", serveMux))
