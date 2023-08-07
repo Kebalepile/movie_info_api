@@ -22,63 +22,52 @@ type err_message struct {
 func requestHandler(res http.ResponseWriter, req *http.Request) {
 
 	origin := req.Header.Get("Origin")
-	log.Println("request origin: ", origin)
-	log.Println(allowedDomains[origin])
+
 	if ok := allowedDomains[origin]; !ok {
 		http.Error(res, "Forbidden Not Allowed Origin", http.StatusForbidden)
 		return
 	}
 	log.Println(req.Method)
 	if req.Method != http.MethodPost {
-		log.Println("Method not Allowed")
+
 		http.Error(res, "Method not Allowed", http.StatusMethodNotAllowed)
 		return
 	}
-
-	if contentType := req.Header.Get("Content-Type"); contentType != "application/json" {
-		log.Println("Content Type: " + contentType + " is not allowed.")
-		http.Error(res, "Content Type: "+contentType+" is not allowed.", http.StatusNotAcceptable)
-		return
-	}
-
 	var end_user_request read.Request
 	err := json.NewDecoder(req.Body).Decode(&end_user_request)
 	if err != nil {
-		log.Println(err)
+
 		http.Error(res, "Invalid JSON payload", http.StatusBadRequest)
 		return
 	}
 
 	message, err := read.EndUserRequest(end_user_request)
 	if err != nil {
-		log.Println(err)
+
 		http.Error(res, "Failed to log end-user request", http.StatusInternalServerError)
 		return
 	}
 
 	response, err := json.Marshal(message)
 	if err != nil {
-		log.Println(err)
+
 		http.Error(res, "Failed to marshel response", http.StatusInternalServerError)
 		return
 	}
-	log.Println(response)
-	// Set response headers
-	res.Header().Set("Access-Control-Allow-Origin", "*") // Allow all origins (you can specify specific origins here)
-	res.Header().Set("Access-Control-Allow-Methods", "POST")
-	res.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	res.Header().Set("Content-Type", "application/json")
-	// ser status code
-	res.WriteHeader(http.StatusOK)
-	// send json as reponse
-	res.Write(response)
 
+	// Set response headers
+	res.Header().Set("Access-Control-Allow-Origin", origin) // Allow all origins (you can specify specific origins here)
+
+	res.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+	res.Header().Set("Content-Type", "application/json")
+
+	res.WriteHeader(http.StatusOK)
+
+	res.Write(response)
 }
 func trendingHandler(res http.ResponseWriter, req *http.Request) {
 
 	origin := req.Header.Get("Origin")
-
-	log.Println("request origin: ", origin)
 
 	if ok := allowedDomains[origin]; !ok {
 		http.Error(res, "Forbidden Not Allowed Origin", http.StatusForbidden)
@@ -90,7 +79,7 @@ func trendingHandler(res http.ResponseWriter, req *http.Request) {
 		http.Error(res, "Failed to get trending files", http.StatusInternalServerError)
 		return
 	}
-	res.Header().Set("Access-Control-Allow-Origin", "*") // Allow all origins (you can specify specific origins here)
+	res.Header().Set("Access-Control-Allow-Origin", origin) // Allow all origins (you can specify specific origins here)
 	res.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
 	res.Header().Set("Content-Type", "application/json")
 
@@ -149,8 +138,6 @@ func recommendedHandler(res http.ResponseWriter, req *http.Request) {
 
 	origin := req.Header.Get("Origin")
 
-	log.Println("request origin: ", origin)
-
 	if ok := allowedDomains[origin]; !ok {
 		http.Error(res, "Forbidden Not Allowed Origin", http.StatusForbidden)
 		return
@@ -162,7 +149,7 @@ func recommendedHandler(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	res.Header().Set("Access-Control-Allow-Origin", "*") // Allow all origins (you can specify specific origins here)
+	res.Header().Set("Access-Control-Allow-Origin", origin) // Allow all origins (you can specify specific origins here)
 	res.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
 	res.Header().Set("Content-Type", "application/json")
 
@@ -222,9 +209,6 @@ func homeHandler(res http.ResponseWriter, req *http.Request) {
 
 	origin := req.Header.Get("Origin")
 
-	log.Println("request origin: ", origin)
-	log.Println(allowedDomains[origin])
-
 	if ok := allowedDomains[origin]; !ok {
 		http.Error(res, "Forbidden Not Allowed Origin", http.StatusForbidden)
 		return
@@ -234,7 +218,7 @@ func homeHandler(res http.ResponseWriter, req *http.Request) {
 		http.Error(res, "Failed to marshal response", http.StatusInternalServerError)
 		return
 	}
-	res.Header().Set("Access-Control-Allow-Origin", "*") // Allow all origins (you can specify specific origins here)
+	res.Header().Set("Access-Control-Allow-Origin", origin) // Allow all origins (you can specify specific origins here)
 	res.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
 	res.Header().Set("Content-Type", "application/json")
 	res.WriteHeader(http.StatusOK)
