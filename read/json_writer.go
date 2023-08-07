@@ -68,5 +68,5 @@ func EndUserRequest(end_user_request Request) (map[string]string, error) {
 		return nil, err
 	}
 
-	return map[string]string{"msg": "Your request has been successfully logged, will get back to you within 48hours on given"}, nil
+	return map[string]string{"msg": "Your request has been successfully logged, will get back to you within 48hours"}, nil
 }
