@@ -16,7 +16,6 @@ export default () => {
               children: new Array(3).fill().map((_, i) => ({
                 type: "li",
                 class: "page_link",
-                // content: i === 0 ? "home" : i === 1 ? "movies" : "about",
                 children: [
                     i === 0 ? {
                     type: "a",
