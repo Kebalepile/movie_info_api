@@ -9,14 +9,15 @@ import (
 	"io"
 )
 
+// [122 63 180 204 168 47 78 101 253 196 27 42 15 90 73 229 252 207 233 30 37 1 218 124 21 176 106 88 172 42 35 255]
+// iv ->  [9 195 196 190 169 26 163 155 20 116 72 211]
 func main() {
 	// Generate a shared encryption key.
 	key := generateRandomKey()
 
 	// Generate a random initialization vector (IV).
 	iv := generateRandomIV()
-    fmt.Println(key)
-	fmt.Println(iv)
+
 	// Encrypt some data.
 	text := "This is some data to encrypt."
 	ciphertext, err := encrypt(key, iv, text)

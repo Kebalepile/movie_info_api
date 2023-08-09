@@ -5,9 +5,13 @@ import (
 	"crypto/cipher"
 	"crypto/rand"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"io"
 )
+
+// EncryptionKey represents the encryption key used for encrypting and decrypting data.
+type EncryptionKey []byte
 
 func main() {
 	// Generate a shared encryption key.
@@ -17,17 +21,17 @@ func main() {
 	iv := generateRandomIV()
 
 	// Encrypt some data.
-	text := "This is some data to encrypt."
-	ciphertext, err := encrypt(key, iv, text)
+	data := map[string]interface{}{"message": "This is some data to encrypt."}
+	ciphertext, err := encrypt(key, iv, data)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println("ciphered text -> ", ciphertext)
+	// fmt.Println("ciphered text -> ", ciphertext)
 
 	// Encode the encrypted data as a base64 string before sending it to the API.
 	encodedCiphertext := base64.StdEncoding.EncodeToString(ciphertext)
-	fmt.Println("encoded ciphered text -> ", encodedCiphertext)
+	// fmt.Println("encoded ciphered text -> ", encodedCiphertext)
 
 	// Send the encoded ciphertext to the API.
 	// ...
@@ -38,10 +42,10 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println("decoded ciphered text -> ", decodedCiphertext)
+	// fmt.Println("decoded ciphered text -> ", decodedCiphertext)
 
-	// Decrypt the data.
-	plaintext, err := decrypt(key, iv, decodedCiphertext)
+	// Decrypt the data using the encryption key.
+	plaintext, err := key.Decrypt(iv, decodedCiphertext)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -51,42 +55,7 @@ func main() {
 	fmt.Println("plaintext -> ", string(plaintext))
 }
 
-func generateRandomKey() []byte {
-	key := make([]byte, 32)
-	if _, err := io.ReadFull(rand.Reader, key); err != nil {
-		panic(err)
-	}
-	return key
-}
-
-func generateRandomIV() []byte {
-	iv := make([]byte, 12)
-	if _, err := io.ReadFull(rand.Reader, iv); err != nil {
-		panic(err)
-	}
-	return iv
-}
-
-func encrypt(key, iv []byte, text string) ([]byte, error) {
-	// Create a new AES cipher block.
-	block, err := aes.NewCipher(key)
-	if err != nil {
-		return nil, err
-	}
-
-	// Perform AES encryption in Galois/Counter Mode (GCM).
-	aesgcm, err := cipher.NewGCM(block)
-	if err != nil {
-		return nil, err
-	}
-
-	// Encrypt the text with the provided IV.
-	ciphertext := aesgcm.Seal(nil, iv, []byte(text), nil)
-
-	return ciphertext, nil
-}
-
-func decrypt(key, iv, ciphertext []byte) ([]byte, error) {
+func (key EncryptionKey) Decrypt(iv, ciphertext []byte) ([]byte, error) {
 	// Create a new AES cipher block.
 	block, err := aes.NewCipher(key)
 	if err != nil {
@@ -106,4 +75,45 @@ func decrypt(key, iv, ciphertext []byte) ([]byte, error) {
 	}
 
 	return plaintext, nil
+}
+
+func generateRandomKey() EncryptionKey {
+	key := make([]byte, 32)
+	if _, err := io.ReadFull(rand.Reader, key); err != nil {
+		panic(err)
+	}
+	return EncryptionKey(key)
+}
+
+func generateRandomIV() []byte {
+	iv := make([]byte, 12)
+	if _, err := io.ReadFull(rand.Reader, iv); err != nil {
+		panic(err)
+	}
+	return iv
+}
+
+func encrypt(key, iv []byte, data interface{}) ([]byte, error) {
+	// Serialize the data to JSON.
+	jsonData, err := json.Marshal(data)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create a new AES cipher block.
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+
+	// Perform AES encryption in Galois/Counter Mode (GCM).
+	aesgcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return nil, err
+	}
+
+	// Encrypt the JSON data with the provided IV.
+	ciphertext := aesgcm.Seal(nil, iv, jsonData, nil)
+
+	return ciphertext, nil
 }
