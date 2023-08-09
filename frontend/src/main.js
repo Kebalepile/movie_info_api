@@ -70,13 +70,13 @@ async function main() {
   console.log(iv);
 
   // Encrypt some data.
-  let text = "This is some data to encrypt.";
+  let text = {message:"This is some data to encrypt."};
   let ciphertext = await encrypt(key, iv, text);
-  // console.log("ciphered text -> ", ciphertext);
+  console.log("ciphered text -> ", JSON.stringify(ciphertext));
 
   // Encode the encrypted data as a base64 string before sending it to the API.
   let encodedCiphertext = btoa(String.fromCharCode(...ciphertext)); // convert byte array to base64 string
-  // console.log("encoded ciphered text -> ", encodedCiphertext);
+  console.log("encoded ciphered text -> ", JSON.stringify(encodedCiphertext));
 
   // Send the encoded ciphertext to the API.
   // ...
@@ -89,7 +89,7 @@ async function main() {
 
   // Decrypt the data.
   let plaintext = await decrypt(key, iv, decodedCiphertext);
-  //  console.log(plaintext)
+   console.log(plaintext)
 }
 
 main();
