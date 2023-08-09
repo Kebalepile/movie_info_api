@@ -13,17 +13,22 @@ func main() {
 	// Generate a shared encryption key.
 	key := generateRandomKey()
 
+	// Generate a random initialization vector (IV).
+	iv := generateRandomIV()
+
 	// Encrypt some data.
 	text := "This is some data to encrypt."
-	ciphertext, err := encrypt(key, text)
+	ciphertext, err := encrypt(key, iv, text)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-    fmt.Println("ciphered text -> ", ciphertext)
+	fmt.Println("ciphered text -> ", ciphertext)
+
 	// Encode the encrypted data as a base64 string before sending it to the API.
 	encodedCiphertext := base64.StdEncoding.EncodeToString(ciphertext)
-    fmt.Println("encided ciphered text -> ", encodedCiphertext)
+	fmt.Println("encoded ciphered text -> ", encodedCiphertext)
+
 	// Send the encoded ciphertext to the API.
 	// ...
 
@@ -33,36 +38,39 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-    fmt.Println("deciphered text -> ", decodedCiphertext)
+	fmt.Println("decoded ciphered text -> ", decodedCiphertext)
+
 	// Decrypt the data.
-	plaintext, err := decrypt(key, decodedCiphertext)
+	plaintext, err := decrypt(key, iv, decodedCiphertext)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
 	// Print the decrypted data.
-	fmt.Println("plain text -> ",string(plaintext))
+	fmt.Println("plaintext -> ", string(plaintext))
 }
 
-func generateRandomKey() []byte{
-key := make([]byte, 32)
-if _, err := io.ReadFull(rand.Reader, key); err != nil {
-	panic(err)
-}
-return key
+func generateRandomKey() []byte {
+	key := make([]byte, 32)
+	if _, err := io.ReadFull(rand.Reader, key); err != nil {
+		panic(err)
+	}
+	return key
 }
 
-func encrypt(key []byte, text string) ([]byte, error) {
+func generateRandomIV() []byte {
+	iv := make([]byte, 12)
+	if _, err := io.ReadFull(rand.Reader, iv); err != nil {
+		panic(err)
+	}
+	return iv
+}
+
+func encrypt(key, iv []byte, text string) ([]byte, error) {
 	// Create a new AES cipher block.
 	block, err := aes.NewCipher(key)
 	if err != nil {
-		return nil, err
-	}
-
-	// Generate a random initialization vector (IV).
-	iv := make([]byte, aes.BlockSize)
-	if _, err := io.ReadFull(rand.Reader, iv); err != nil {
 		return nil, err
 	}
 
@@ -72,25 +80,18 @@ func encrypt(key []byte, text string) ([]byte, error) {
 		return nil, err
 	}
 
-	// Encrypt the text with the generated IV.
+	// Encrypt the text with the provided IV.
 	ciphertext := aesgcm.Seal(nil, iv, []byte(text), nil)
-
-	// Prepend the IV to the ciphertext.
-	ciphertext = append(iv, ciphertext...)
 
 	return ciphertext, nil
 }
 
-func decrypt(key []byte, ciphertext []byte) ([]byte, error) {
+func decrypt(key, iv, ciphertext []byte) ([]byte, error) {
 	// Create a new AES cipher block.
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, err
 	}
-
-	// Extract the IV from the ciphertext.
-	iv := ciphertext[:aes.BlockSize]
-	ciphertext = ciphertext[aes.BlockSize:]
 
 	// Perform AES decryption in Galois/Counter Mode (GCM).
 	aesgcm, err := cipher.NewGCM(block)
@@ -98,7 +99,7 @@ func decrypt(key []byte, ciphertext []byte) ([]byte, error) {
 		return nil, err
 	}
 
-	// Decrypt the ciphertext using the extracted IV.
+	// Decrypt the ciphertext using the provided IV.
 	plaintext, err := aesgcm.Open(nil, iv, ciphertext, nil)
 	if err != nil {
 		return nil, err
