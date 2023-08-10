@@ -225,7 +225,7 @@ func homeHandler(res http.ResponseWriter, req *http.Request) {
 	res.Write(response)
 }
 
-func Run() {
+func Init() {
 
 	// Create Http server
 	serveMux := http.NewServeMux()
