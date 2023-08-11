@@ -1,5 +1,6 @@
 import home from "./components/pages/home.js";
 import { Encrypt, Decrypt } from "./utils/encryption/encrypt.js";
+// import {  generateRandomID } from "./utils/encryption/random.js";
 home();
 
 // Main function.
@@ -10,6 +11,10 @@ async function main() {
   console.log(encodedCipherData);
   const plainData = await Decrypt(encodedCipherData);
   console.log(plainData);
+
+  // console.log(generateRandomID());
+  // console.log(generateRandomID());
+  // console.log(generateRandomID());
 }
 
 main();
