@@ -5,36 +5,31 @@ import (
 	"crypto/cipher"
 	"encoding/base64"
 	"encoding/json"
-	"fmt"
+
+	"github.com/Kebalepile/movie_info_api/read"
 )
 
-func Start() {
-
+func DecodeCipherText(encodedCipherText string) read.Request {
 	key := GenerateKey()
 	iv := GenerateIV()
-
-	// GET encodedCiphered data from api request
-	encodedCiphertext := "frc7uRdEGh4o7lpERL9IzOC3eDd6mTarHA9pLRoYFzZtakwS3qNhHzUkoa54xyRZJaMJ3AZcM2vt26TVH3+x"
-
-	// On the server side, decode the base64 string back to ciphertext.
-	decodedCiphertext, err := base64.StdEncoding.DecodeString(encodedCiphertext)
+	decodedCiphertext, err := base64.StdEncoding.DecodeString(encodedCipherText)
 	if err != nil {
-		fmt.Println(err)
-		return
+		panic(err)
 	}
-	fmt.Println("decoded ciphered text -> ", decodedCiphertext)
-
 	// Decrypt the data using the encryption key.
 	plaintext, err := key.Decrypt(iv, decodedCiphertext)
 	if err != nil {
-		fmt.Println(err)
-		return
+		panic(err)
+	}
+	var endUserRequest read.Request
+	err = json.Unmarshal(plaintext, &endUserRequest)
+	if err != nil {
+		panic(err)
 	}
 
-	// Print the decrypted data.
-	fmt.Println("plaintext -> ", string(plaintext))
-}
+	return endUserRequest
 
+}
 func (key EncryptionKey) Decrypt(iv, ciphertext []byte) ([]byte, error) {
 	// Create a new AES cipher block.
 	block, err := aes.NewCipher(key)

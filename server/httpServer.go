@@ -5,8 +5,8 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/Kebalepile/movie_info_api/encrypt"
 	"github.com/Kebalepile/movie_info_api/read"
-    // "github.com/Kebalepile/movie_info_api/encrypt"
 )
 
 // for developmnet use only, remove them at production
@@ -25,24 +25,26 @@ func requestHandler(w http.ResponseWriter, r *http.Request) {
 	origin := r.Header.Get("Origin")
 
 	if ok := allowedDomains[origin]; !ok {
-		http.Error(res, "Forbidden Not Allowed Origin", http.StatusForbidden)
+		http.Error(w, "Forbidden Not Allowed Origin", http.StatusForbidden)
 		return
 	}
-	log.Println(r.Method)
 	if r.Method != http.MethodPost {
 
 		http.Error(w, "Method not Allowed", http.StatusMethodNotAllowed)
 		return
 	}
-	var end_user_request read.Request
-	err := json.NewDecoder(r.Body).Decode(&end_user_request)
+
+	var encodedCipherText string
+	err := json.NewDecoder(r.Body).Decode(&encodedCipherText)
 	if err != nil {
 
 		http.Error(w, "Invalid JSON payload", http.StatusBadRequest)
 		return
 	}
 
-	message, err := read.EndUserRequest(end_user_request)
+	userRequest := encrypt.DecodeCipherText(encodedCipherText)
+
+	message, err := read.EndUserRequest(userRequest)
 	if err != nil {
 
 		http.Error(w, "Failed to log end-user request", http.StatusInternalServerError)

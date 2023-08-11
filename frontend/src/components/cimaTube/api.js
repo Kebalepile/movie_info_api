@@ -1,12 +1,12 @@
 
-
+import { Encrypt } from "../../utils/encryption/encrypt.js";
 /**
  *
  * @param {string} url - domain being used for fetch
  * @param {object} options - fetch options
  * @returns object data recieved from fetch request
  */
-export async function home(url,options) {
+export async function Home(url,options) {
   try {
     const res = await fetch(url, options);
     return await res.json();
@@ -20,7 +20,7 @@ export async function home(url,options) {
  * @param {object} options - fetch options
  * @returns object data recieved from fetch request
  */
-export async function trending(url,options) {
+export async function Trending(url,options) {
   try {
     const res = await fetch(url + "trending", options);
 
@@ -35,7 +35,7 @@ export async function trending(url,options) {
  * @param {object} options - fetch options
  * @returns object data recieved from fetch request
  */
-export async function recommended(url,options) {
+export async function Recommended(url,options) {
   try {
     const res = await fetch(url + "recommended", options);
     return await res.json();
@@ -49,11 +49,13 @@ export async function recommended(url,options) {
  * @param {object} data - data being sent to fetch url
  * @returns object data recieved from fetch request
  */
-export async function request(url, data) {
+export async function Request(url, data) {
+  const encodedCipherText = await Encrypt(data);
+
   try {
     const res = await fetch(url + "request", {
       method: "POST",
-      body: JSON.stringify(data),
+      body: JSON.stringify(encodedCipherText),
     });
 
     return await res.json();
