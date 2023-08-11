@@ -1,11 +1,10 @@
 package main
 
 import (
-	// "github.com/Kebalepile/movie_info_api/server"
-	en "github.com/Kebalepile/movie_info_api/encrypt"
+	"github.com/Kebalepile/movie_info_api/server"
+	
 )
 
 func main() {
-	// server.Init()
-	en.Start()
+	server.Init()
 }

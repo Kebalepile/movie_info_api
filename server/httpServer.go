@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/Kebalepile/movie_info_api/read"
+    // "github.com/Kebalepile/movie_info_api/encrypt"
 )
 
 // for developmnet use only, remove them at production
@@ -19,69 +20,69 @@ type err_message struct {
 }
 
 // Api end points
-func requestHandler(res http.ResponseWriter, req *http.Request) {
+func requestHandler(w http.ResponseWriter, r *http.Request) {
 
-	origin := req.Header.Get("Origin")
+	origin := r.Header.Get("Origin")
 
 	if ok := allowedDomains[origin]; !ok {
 		http.Error(res, "Forbidden Not Allowed Origin", http.StatusForbidden)
 		return
 	}
-	log.Println(req.Method)
-	if req.Method != http.MethodPost {
+	log.Println(r.Method)
+	if r.Method != http.MethodPost {
 
-		http.Error(res, "Method not Allowed", http.StatusMethodNotAllowed)
+		http.Error(w, "Method not Allowed", http.StatusMethodNotAllowed)
 		return
 	}
 	var end_user_request read.Request
-	err := json.NewDecoder(req.Body).Decode(&end_user_request)
+	err := json.NewDecoder(r.Body).Decode(&end_user_request)
 	if err != nil {
 
-		http.Error(res, "Invalid JSON payload", http.StatusBadRequest)
+		http.Error(w, "Invalid JSON payload", http.StatusBadRequest)
 		return
 	}
 
 	message, err := read.EndUserRequest(end_user_request)
 	if err != nil {
 
-		http.Error(res, "Failed to log end-user request", http.StatusInternalServerError)
+		http.Error(w, "Failed to log end-user request", http.StatusInternalServerError)
 		return
 	}
 
 	response, err := json.Marshal(message)
 	if err != nil {
 
-		http.Error(res, "Failed to marshel response", http.StatusInternalServerError)
+		http.Error(w, "Failed to marshel response", http.StatusInternalServerError)
 		return
 	}
 
 	// Set response headers
-	res.Header().Set("Access-Control-Allow-Origin", origin) // Allow all origins (you can specify specific origins here)
+	w.Header().Set("Access-Control-Allow-Origin", origin) // Allow all origins (you can specify specific origins here)
 
-	res.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
-	res.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+	w.Header().Set("Content-Type", "application/json")
 
-	res.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusOK)
 
-	res.Write(response)
+	w.Write(response)
 }
-func trendingHandler(res http.ResponseWriter, req *http.Request) {
+func trendingHandler(w http.ResponseWriter, r *http.Request) {
 
-	origin := req.Header.Get("Origin")
+	origin := r.Header.Get("Origin")
 
 	if ok := allowedDomains[origin]; !ok {
-		http.Error(res, "Forbidden Not Allowed Origin", http.StatusForbidden)
+		http.Error(w, "Forbidden Not Allowed Origin", http.StatusForbidden)
 		return
 	}
 
 	files, err := read.GetFiles("trending")
 	if err != nil {
-		http.Error(res, "Failed to get trending files", http.StatusInternalServerError)
+		http.Error(w, "Failed to get trending files", http.StatusInternalServerError)
 		return
 	}
-	res.Header().Set("Access-Control-Allow-Origin", origin) // Allow all origins (you can specify specific origins here)
-	res.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
-	res.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", origin) // Allow all origins (you can specify specific origins here)
+	w.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+	w.Header().Set("Content-Type", "application/json")
 
 	if files != nil {
 		fileContentsChan := make(chan []byte)
@@ -92,7 +93,7 @@ func trendingHandler(res http.ResponseWriter, req *http.Request) {
 				contents, err := read.ReadFileContents(filename)
 				if err != nil {
 
-					http.Error(res, "Failed to read file contents", http.StatusInternalServerError)
+					http.Error(w, "Failed to read file contents", http.StatusInternalServerError)
 					return
 				}
 				fileContentsChan <- contents
@@ -104,7 +105,7 @@ func trendingHandler(res http.ResponseWriter, req *http.Request) {
 			var file_data map[string]any
 			err := json.Unmarshal(<-fileContentsChan, &file_data)
 			if err != nil {
-				http.Error(res, "Failed to read file contents", http.StatusInternalServerError)
+				http.Error(w, "Failed to read file contents", http.StatusInternalServerError)
 				return
 			}
 
@@ -114,44 +115,44 @@ func trendingHandler(res http.ResponseWriter, req *http.Request) {
 
 		response, err := json.Marshal(files_data)
 		if err != nil {
-			http.Error(res, "Failed to stringify response", http.StatusInternalServerError)
+			http.Error(w, "Failed to stringify response", http.StatusInternalServerError)
 			return
 		}
 
-		res.WriteHeader(http.StatusOK)
-		res.Write(response)
+		w.WriteHeader(http.StatusOK)
+		w.Write(response)
 	} else {
 
 		response, err := json.Marshal(err_message{"could not find trending files"})
 		if err != nil {
-			http.Error(res, "Failed to stringify response", http.StatusInternalServerError)
+			http.Error(w, "Failed to stringify response", http.StatusInternalServerError)
 			return
 		}
 
-		res.WriteHeader(http.StatusInternalServerError)
-		res.Write(response)
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write(response)
 	}
 
 }
 
-func recommendedHandler(res http.ResponseWriter, req *http.Request) {
+func recommendedHandler(w http.ResponseWriter, r *http.Request) {
 
-	origin := req.Header.Get("Origin")
+	origin := r.Header.Get("Origin")
 
 	if ok := allowedDomains[origin]; !ok {
-		http.Error(res, "Forbidden Not Allowed Origin", http.StatusForbidden)
+		http.Error(w, "Forbidden Not Allowed Origin", http.StatusForbidden)
 		return
 	}
 
 	files, err := read.GetFiles("must_watch")
 	if err != nil {
-		http.Error(res, "Failed to get trending files", http.StatusInternalServerError)
+		http.Error(w, "Failed to get trending files", http.StatusInternalServerError)
 		return
 	}
 
-	res.Header().Set("Access-Control-Allow-Origin", origin) // Allow all origins (you can specify specific origins here)
-	res.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
-	res.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", origin) // Allow all origins (you can specify specific origins here)
+	w.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+	w.Header().Set("Content-Type", "application/json")
 
 	if files != nil {
 
@@ -163,7 +164,7 @@ func recommendedHandler(res http.ResponseWriter, req *http.Request) {
 				if err != nil {
 					log.Println("Error while trying to read " + filename + " file contents")
 					log.Println(err)
-					http.Error(res, "Failed to read file contents", http.StatusInternalServerError)
+					http.Error(w, "Failed to read file contents", http.StatusInternalServerError)
 					return
 				}
 				fileContentsChan <- contents
@@ -177,7 +178,7 @@ func recommendedHandler(res http.ResponseWriter, req *http.Request) {
 			var file_data map[string]interface{}
 			err := json.Unmarshal(<-fileContentsChan, &file_data)
 			if err != nil {
-				http.Error(res, "Failed to read file contents", http.StatusInternalServerError)
+				http.Error(w, "Failed to read file contents", http.StatusInternalServerError)
 				return
 			}
 
@@ -186,43 +187,43 @@ func recommendedHandler(res http.ResponseWriter, req *http.Request) {
 
 		response, err := json.Marshal(files_data)
 		if err != nil {
-			http.Error(res, "Failed to marshel response", http.StatusInternalServerError)
+			http.Error(w, "Failed to marshel response", http.StatusInternalServerError)
 			return
 		}
 
-		res.WriteHeader(http.StatusOK)
-		res.Write(response)
+		w.WriteHeader(http.StatusOK)
+		w.Write(response)
 	} else {
 
 		response, err := json.Marshal(err_message{"could not find trending files"})
 		if err != nil {
-			http.Error(res, "Failed to marshel response", http.StatusInternalServerError)
+			http.Error(w, "Failed to marshel response", http.StatusInternalServerError)
 			return
 		}
 
-		res.WriteHeader(http.StatusInternalServerError)
-		res.Write(response)
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write(response)
 	}
 
 }
-func homeHandler(res http.ResponseWriter, req *http.Request) {
+func homeHandler(w http.ResponseWriter, r *http.Request) {
 
-	origin := req.Header.Get("Origin")
+	origin := r.Header.Get("Origin")
 
 	if ok := allowedDomains[origin]; !ok {
-		http.Error(res, "Forbidden Not Allowed Origin", http.StatusForbidden)
+		http.Error(w, "Forbidden Not Allowed Origin", http.StatusForbidden)
 		return
 	}
 	response, err := json.Marshal(map[string]string{"message": "WelCome Home. Movie Api"})
 	if err != nil {
-		http.Error(res, "Failed to marshal response", http.StatusInternalServerError)
+		http.Error(w, "Failed to marshal response", http.StatusInternalServerError)
 		return
 	}
-	res.Header().Set("Access-Control-Allow-Origin", origin) // Allow all origins (you can specify specific origins here)
-	res.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
-	res.Header().Set("Content-Type", "application/json")
-	res.WriteHeader(http.StatusOK)
-	res.Write(response)
+	w.Header().Set("Access-Control-Allow-Origin", origin) // Allow all origins (you can specify specific origins here)
+	w.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(response)
 }
 
 func Init() {
