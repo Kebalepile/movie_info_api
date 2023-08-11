@@ -1,37 +1,43 @@
-package ecrypt
+package encrypt
 
 import (
 	"crypto/aes"
 	"crypto/cipher"
-	"crypto/rand"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"io"
 )
 
 // EncryptionKey represents the encryption key used for encrypting and decrypting data.
-type EncryptionKey []byte
+// type EncryptionKey []byte
 
 func Start() {
+	key, _ := GenerateRandomKeyFromString("keba")
+	fmt.Println(string(key))
+	fmt.Println(string(GenerateIVFromString("keba")))
 	// Generate a shared encryption key.
-	key := generateRandomKey()
+	// key := GenerateRandomKey()
+	// fmt.Println(key)
 
 	// Generate a random initialization vector (IV).
-	iv := generateRandomIV()
-
+	iv := GenerateIVFromString("keba")
+	// fmt.Println(iv)
+    SaveKeys(key, iv)
 	// Encrypt some data.
-	data := map[string]interface{}{"message": "This is some data to encrypt."}
-	ciphertext, err := encrypt(key, iv, data)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	// fmt.Println("ciphered text -> ", ciphertext)
+	// data := map[string]interface{}{"message": "This is some data to encrypt."}
+	// ciphertext, err := Encrypt(key, iv, data)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	return
+	// }
+	// // fmt.Println("ciphered text -> ", ciphertext)
 
-	// Encode the encrypted data as a base64 string before sending it to the API.
-	encodedCiphertext := base64.StdEncoding.EncodeToString(ciphertext)
+	// // Encode the encrypted data as a base64 string before sending it to the API.
+	// encodedCiphertext := base64.StdEncoding.EncodeToString(ciphertext)
 	// fmt.Println("encoded ciphered text -> ", encodedCiphertext)
+
+	// GET encodedCiphered data from api request
+	encodedCiphertext := "fZ5Prokgop0RTNRg9eg9TJRhNxYRRM2Bb0ahOTVJsujgoZJ7xSXyZTnf4enurqoRVVPjwFKIuZIU5mFGnoni"
 
 	// Send the encoded ciphertext to the API.
 	// ...
@@ -77,23 +83,8 @@ func (key EncryptionKey) Decrypt(iv, ciphertext []byte) ([]byte, error) {
 	return plaintext, nil
 }
 
-func generateRandomKey() EncryptionKey {
-	key := make([]byte, 32)
-	if _, err := io.ReadFull(rand.Reader, key); err != nil {
-		panic(err)
-	}
-	return EncryptionKey(key)
-}
 
-func generateRandomIV() []byte {
-	iv := make([]byte, 12)
-	if _, err := io.ReadFull(rand.Reader, iv); err != nil {
-		panic(err)
-	}
-	return iv
-}
-
-func encrypt(key, iv []byte, data interface{}) ([]byte, error) {
+func Encrypt(key, iv []byte, data interface{}) ([]byte, error) {
 	// Serialize the data to JSON.
 	jsonData, err := json.Marshal(data)
 	if err != nil {
