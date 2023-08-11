@@ -8,39 +8,13 @@ import (
 	"fmt"
 )
 
-// EncryptionKey represents the encryption key used for encrypting and decrypting data.
-// type EncryptionKey []byte
-
 func Start() {
-	key, _ := GenerateRandomKeyFromString("keba")
-	fmt.Println(string(key))
-	fmt.Println(string(GenerateIVFromString("keba")))
-	// Generate a shared encryption key.
-	// key := GenerateRandomKey()
-	// fmt.Println(key)
 
-	// Generate a random initialization vector (IV).
-	iv := GenerateIVFromString("keba")
-	// fmt.Println(iv)
-    SaveKeys(key, iv)
-	// Encrypt some data.
-	// data := map[string]interface{}{"message": "This is some data to encrypt."}
-	// ciphertext, err := Encrypt(key, iv, data)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	return
-	// }
-	// // fmt.Println("ciphered text -> ", ciphertext)
-
-	// // Encode the encrypted data as a base64 string before sending it to the API.
-	// encodedCiphertext := base64.StdEncoding.EncodeToString(ciphertext)
-	// fmt.Println("encoded ciphered text -> ", encodedCiphertext)
+	key := GenerateKey()
+	iv := GenerateIV()
 
 	// GET encodedCiphered data from api request
-	encodedCiphertext := "fZ5Prokgop0RTNRg9eg9TJRhNxYRRM2Bb0ahOTVJsujgoZJ7xSXyZTnf4enurqoRVVPjwFKIuZIU5mFGnoni"
-
-	// Send the encoded ciphertext to the API.
-	// ...
+	encodedCiphertext := "frc7uRdEGh4o7lpERL9IzOC3eDd6mTarHA9pLRoYFzZtakwS3qNhHzUkoa54xyRZJaMJ3AZcM2vt26TVH3+x"
 
 	// On the server side, decode the base64 string back to ciphertext.
 	decodedCiphertext, err := base64.StdEncoding.DecodeString(encodedCiphertext)
@@ -48,7 +22,7 @@ func Start() {
 		fmt.Println(err)
 		return
 	}
-	// fmt.Println("decoded ciphered text -> ", decodedCiphertext)
+	fmt.Println("decoded ciphered text -> ", decodedCiphertext)
 
 	// Decrypt the data using the encryption key.
 	plaintext, err := key.Decrypt(iv, decodedCiphertext)
@@ -82,7 +56,6 @@ func (key EncryptionKey) Decrypt(iv, ciphertext []byte) ([]byte, error) {
 
 	return plaintext, nil
 }
-
 
 func Encrypt(key, iv []byte, data interface{}) ([]byte, error) {
 	// Serialize the data to JSON.
