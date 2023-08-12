@@ -23,11 +23,11 @@ import { RequestData } from "./components/cimaTube/Request.js";
   console.log("Recommended");
   console.table(res);
 
-  //   const data = RequestData({
-  //     query: "Kill Bill",
-  //     email: "koko@outlok.com",
-  //     mediaHandle: "@twiter/kokij",
-  //   });
-  //   res = await Request(apiUrl, data);
-  //   console.table(res);
+    const data = RequestData({
+      query: "Kill Bill",
+      email: "koko@outlok.com",
+      mediaHandle: "@twiter/kokij",
+    });
+    res = await Request(apiUrl, data);
+    console.table(res);
 })();
