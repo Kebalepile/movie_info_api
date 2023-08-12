@@ -76,3 +76,32 @@ func Encrypt(key, iv []byte, data interface{}) ([]byte, error) {
 
 	return ciphertext, nil
 }
+
+// implements error type that implemetns the error interface
+type CustomError struct {
+	Message string
+}
+
+func (e CustomError) Error() string {
+	return e.Message
+}
+
+/*
+*
+@description Encrypt and Encode response data to be sent as json body
+*/
+func EncryptEncode(data interface{}) (string, error) {
+	k := GenerateKey()
+	iv := GenerateIV()
+	cipherText, err := Encrypt(k, iv, data)
+
+	if err != nil {
+
+		return "", CustomError{Message: "Failed to encrypt data"}
+	}
+	/**
+	 * @description convert byte slice to a base64 string before sending as response body
+	 */
+	encodedText := base64.StdEncoding.EncodeToString(cipherText)
+	return encodedText, nil
+}
