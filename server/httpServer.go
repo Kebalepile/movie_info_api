@@ -47,12 +47,6 @@ func requestHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// response, err := json.Marshal(message)
-	// if err != nil {
-
-	// 	http.Error(w, "Failed to marshel response", http.StatusInternalServerError)
-	// 	return
-	// }
 	// Encrypt & Encode filesData
 	encodedText, err := encrypt.EncryptEncode(message)
 	if err != nil {
@@ -260,7 +254,7 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response, err := json.Marshal(encodedText)
-	// response, err := json.Marshal(map[string]string{"message": "WelCome Home. Movie Api"})
+
 	if err != nil {
 		http.Error(w, "Failed to marshal response", http.StatusInternalServerError)
 		return
