@@ -74,33 +74,33 @@ export async function Encrypt(data) {
     const k = await generateKeyFromString(secret.k);
     const iv = generateIVFromString(secret.iv);
 
-    const cipheredData = await encrypt(k, iv, data);
+    const cipheredText = await encrypt(k, iv, data);
     /**
      * @description convert byte array to a base64 string
      */
-    const endcodeCipheredData = btoa(String.fromCharCode(...cipheredData));
-    return endcodeCipheredData;
+    const endcodeCipherText = btoa(String.fromCharCode(...cipheredText));
+    return endcodeCipherText;
   } catch (err) {
     console.log(err);
   }
 }
 /**
  *
- * @param {string} encoededCipherData
+ * @param {string} encodedCipherText
  * @description decrypt wrapper function
  * @return decrypted data
  */
-export async function Decrypt(encodedCipherData) {
+export async function Decrypt(encodedCipherText) {
   try {
     const k = await generateKeyFromString(secret.k);
     const iv = generateIVFromString(secret.iv);
-    const decodedCipherData = new Uint8Array(
-      atob(encodedCipherData)
+    const decodedCipherText = new Uint8Array(
+      atob(encodedCipherText)
         .split("")
         .map((c) => c.charCodeAt(0))
     );
 
-    const plainData = await decrypt(k, iv, decodedCipherData);
+    const plainData = await decrypt(k, iv, decodedCipherText);
     return plainData;
   } catch (err) {
     console.log(err);
