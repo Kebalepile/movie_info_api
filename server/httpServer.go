@@ -15,10 +15,6 @@ var allowedDomains = map[string]bool{
 	"http://127.0.0.1:5500/": true,
 }
 
-type err_message struct {
-	Message string
-}
-
 // Api end points
 func requestHandler(w http.ResponseWriter, r *http.Request) {
 
@@ -51,9 +47,21 @@ func requestHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response, err := json.Marshal(message)
-	if err != nil {
+	// response, err := json.Marshal(message)
+	// if err != nil {
 
+	// 	http.Error(w, "Failed to marshel response", http.StatusInternalServerError)
+	// 	return
+	// }
+	// Encrypt & Encode filesData
+	encodedText, err := encrypt.EncryptEncode(message)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	response, err := json.Marshal(encodedText)
+	if err != nil {
 		http.Error(w, "Failed to marshel response", http.StatusInternalServerError)
 		return
 	}
@@ -102,20 +110,26 @@ func trendingHandler(w http.ResponseWriter, r *http.Request) {
 			}(file)
 		}
 
-		var files_data []map[string]any
+		var filesData []map[string]any
 		for range files {
-			var file_data map[string]any
-			err := json.Unmarshal(<-fileContentsChan, &file_data)
+			var fileData map[string]any
+			err := json.Unmarshal(<-fileContentsChan, &fileData)
 			if err != nil {
 				http.Error(w, "Failed to read file contents", http.StatusInternalServerError)
 				return
 			}
 
-			files_data = append(files_data, file_data)
+			filesData = append(filesData, fileData)
 
 		}
+		// Encrypt & Encode filesData
+		encodedText, err := encrypt.EncryptEncode(filesData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 
-		response, err := json.Marshal(files_data)
+		response, err := json.Marshal(encodedText)
 		if err != nil {
 			http.Error(w, "Failed to stringify response", http.StatusInternalServerError)
 			return
@@ -125,9 +139,18 @@ func trendingHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write(response)
 	} else {
 
-		response, err := json.Marshal(err_message{"could not find trending files"})
+		custom := encrypt.CustomError{Message: "could not find trending files"}
+
+		// Encrypt & Encode error message
+		encodedText, err := encrypt.EncryptEncode(custom.Error())
 		if err != nil {
-			http.Error(w, "Failed to stringify response", http.StatusInternalServerError)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		response, err := json.Marshal(encodedText)
+		if err != nil {
+			http.Error(w, "Failed to marshel response", http.StatusInternalServerError)
 			return
 		}
 
@@ -173,21 +196,28 @@ func recommendedHandler(w http.ResponseWriter, r *http.Request) {
 			}(file)
 		}
 
-		var files_data []map[string]interface{}
+		var filesData []map[string]interface{}
 
 		for range files {
 
-			var file_data map[string]interface{}
-			err := json.Unmarshal(<-fileContentsChan, &file_data)
+			var fileData map[string]interface{}
+			err := json.Unmarshal(<-fileContentsChan, &fileData)
 			if err != nil {
 				http.Error(w, "Failed to read file contents", http.StatusInternalServerError)
 				return
 			}
 
-			files_data = append(files_data, file_data)
+			filesData = append(filesData, fileData)
 		}
 
-		response, err := json.Marshal(files_data)
+		// Encrypt & Encode filesData
+		encodedText, err := encrypt.EncryptEncode(filesData)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		response, err := json.Marshal(encodedText)
 		if err != nil {
 			http.Error(w, "Failed to marshel response", http.StatusInternalServerError)
 			return
@@ -196,8 +226,15 @@ func recommendedHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Write(response)
 	} else {
+		custom := encrypt.CustomError{Message: "could not find recommended files"}
+		// Encrypt & Encode error message
+		encodedText, err := encrypt.EncryptEncode(custom.Error())
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 
-		response, err := json.Marshal(err_message{"could not find trending files"})
+		response, err := json.Marshal(encodedText)
 		if err != nil {
 			http.Error(w, "Failed to marshel response", http.StatusInternalServerError)
 			return
@@ -216,7 +253,14 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Forbidden Not Allowed Origin", http.StatusForbidden)
 		return
 	}
-	response, err := json.Marshal(map[string]string{"message": "WelCome Home. Movie Api"})
+	encodedText, err := encrypt.EncryptEncode(map[string]string{"message": "WelCome Home. Movie Api"})
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	response, err := json.Marshal(encodedText)
+	// response, err := json.Marshal(map[string]string{"message": "WelCome Home. Movie Api"})
 	if err != nil {
 		http.Error(w, "Failed to marshal response", http.StatusInternalServerError)
 		return
