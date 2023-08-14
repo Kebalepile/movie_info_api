@@ -4,15 +4,16 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/json"
-	"errors"
+	
 	"fmt"
 	"io"
-	"io/ioutil"
+	
 	"os"
 	"path/filepath"
-	"strings"
+	
 
 	"golang.org/x/crypto/pbkdf2"
+	"github.com/Kebalepile/movie_info_api/environment"
 )
 
 // EncryptionKey represents the encryption key used for encrypting and decrypting data.
@@ -38,15 +39,15 @@ func GenerateRandomIV() intializationVector {
 func GenerateKey() EncryptionKey {
 	keys := GetKeys()
 	// choose a fixed salt value or generate on based on your needs
-	salt := []byte(keys["salt"])
+	salt := []byte(keys["SALT"])
 	// choose an appropreate number of iterations
 	iterations := 100000
-	k := pbkdf2.Key([]byte(keys["k"]), salt, iterations, 32, sha256.New)
+	k := pbkdf2.Key([]byte(keys["K"]), salt, iterations, 32, sha256.New)
 	return EncryptionKey(k)
 }
 func GenerateIV() intializationVector {
 	keys := GetKeys()
-	iv := []byte(keys["iv"])
+	iv := []byte(keys["IV"])
 	if len(iv) > 12 {
 		//Truncate the iv slice to 12 bytes if it is longer
 		iv = iv[:12]
@@ -59,7 +60,8 @@ func GenerateIV() intializationVector {
 }
 func GenerateRandomKeyFromString(key string) (EncryptionKey, error) {
 	// choose a fixed salt value or generate on based on your needs
-	salt := []byte("some-salt-value")
+	keys := GetKeys()
+	salt := []byte(keys["SALT"])
 	// choose an appropreate number of iterations
 	iterations := 100000
 	k := pbkdf2.Key([]byte(key), salt, iterations, 32, sha256.New)
@@ -86,7 +88,7 @@ func SaveKeys(key EncryptionKey, iv intializationVector) {
 	if err != nil {
 		panic(err)
 	}
-	err = ioutil.WriteFile(filepath.Join("encrypt", "file", "stuff.json"), contentBytes, 0644)
+	err = os.WriteFile(filepath.Join("encrypt", "file", "stuff.json"), contentBytes, 0644)
 	if err != nil {
 		panic(err)
 	}
@@ -95,51 +97,6 @@ func SaveKeys(key EncryptionKey, iv intializationVector) {
 }
 
 func GetKeys() map[string]string {
-	var filePaths []string
-	fileDir := filepath.Join("encrypt", "file", "keys.json")
-	err := filepath.Walk(fileDir, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-
-		if !info.IsDir() && filepath.Ext(path) == ".json" {
-			if strings.Contains(info.Name(), "keys") {
-				filePaths = append(filePaths, path)
-				return nil
-			}
-			return errors.New("No file  with given name found")
-		}
-		return errors.New("No json file found")
-	})
-
-	if err != nil {
-		panic(err)
-
-	}
-
-	fileContentChan := make(chan []byte)
-
-	for _, fname := range filePaths {
-		go func(name string) {
-			contents, err := ioutil.ReadFile(name)
-			if err != nil {
-				panic(err)
-			}
-
-			fileContentChan <- contents
-		}(fname)
-	}
-	var contents map[string]string
-	for range filePaths {
-
-		bytes := <-fileContentChan
-		err := json.Unmarshal(bytes, &contents)
-		if err != nil {
-			panic(err)
-
-		}
-
-	}
-
-	return contents
+	variables := environment.Read()
+	return variables
 }

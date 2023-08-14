@@ -2,7 +2,7 @@ package read
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"os"
 	"path/filepath"
 )
@@ -32,7 +32,7 @@ func findJsonFile() search_request {
 	}
 	defer file.Close()
 
-	contents, err := ioutil.ReadAll(file)
+	contents, err := io.ReadAll(file)
 	if err != nil {
 		panic(err)
 	}
@@ -62,7 +62,7 @@ func EndUserRequest(end_user_request Request) (map[string]string, error) {
 		return nil, err
 	}
 
-	err = ioutil.WriteFile(file_path, contents_bytes, 0644)
+	err = os.WriteFile(file_path, contents_bytes, 0644)
 	if err != nil {
 
 		return nil, err

@@ -2,7 +2,6 @@ package environment
 
 import (
 	"github.com/joho/godotenv"
-	// "os"
 )
 
 // Read .env variables to be used.
