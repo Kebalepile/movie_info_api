@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	mongo "github.com/Kebalepile/movie_info_api/database"
 )
 
 var file_path = filepath.Join("files", "requests", "search_requests.json")
@@ -67,6 +68,11 @@ func EndUserRequest(end_user_request Request) (map[string]string, error) {
 
 		return nil, err
 	}
+
+	return map[string]string{"msg": "Your request has been successfully logged, will get back to you within 48hours"}, nil
+}
+func MovieRequest(movieRequest Request) (map[string]string, error) {
+	mongo.Request(movieRequest)
 
 	return map[string]string{"msg": "Your request has been successfully logged, will get back to you within 48hours"}, nil
 }

@@ -2,6 +2,7 @@ package database
 import (
 	"context"
 	"maps"
+	"encoding/json"
 	"github.com/Kebalepile/movie_info_api/environment"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -113,4 +114,16 @@ func Recommended() []map[string]any {
 
 }
 func CommingSoon() {}
-func Request()     {}
+func Request(mRequest struct {
+	Date        string `json:"date"`
+	Query       string `json:"query"`
+	Email       string `json:"email"`
+	MediaHandle string `json:"mediaHandle"`
+})     bool{
+	bytes, err := json.Marshal(mRequest)
+	if err != nil {
+panic(rr)
+	}
+	
+
+}
