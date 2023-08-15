@@ -7,6 +7,7 @@ import (
 
 	"github.com/Kebalepile/movie_info_api/encrypt"
 	"github.com/Kebalepile/movie_info_api/read"
+	mongo "github.com/Kebalepile/movie_info_api/database"
 )
 
 // for developmnet use only, remove them at production
@@ -79,45 +80,14 @@ func trendingHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	files, err := read.GetFiles("trending")
-	if err != nil {
-		http.Error(w, "Failed to get trending files", http.StatusInternalServerError)
-		return
-	}
+	trendingMovies := mongo.Trending()
 	w.Header().Set("Access-Control-Allow-Origin", origin) // Allow all origins (you can specify specific origins here)
 	w.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
 	w.Header().Set("Content-Type", "application/json")
 
-	if files != nil {
-		fileContentsChan := make(chan []byte)
-
-		for _, file := range files {
-			go func(filename string) {
-
-				contents, err := read.ReadFileContents(filename)
-				if err != nil {
-
-					http.Error(w, "Failed to read file contents", http.StatusInternalServerError)
-					return
-				}
-				fileContentsChan <- contents
-			}(file)
-		}
-
-		var filesData []map[string]any
-		for range files {
-			var fileData map[string]any
-			err := json.Unmarshal(<-fileContentsChan, &fileData)
-			if err != nil {
-				http.Error(w, "Failed to read file contents", http.StatusInternalServerError)
-				return
-			}
-
-			filesData = append(filesData, fileData)
-
-		}
+	if len(trendingMovies) > 0 {
 		// Encrypt & Encode filesData
-		encodedText, err := encrypt.EncryptEncode(filesData)
+		encodedText, err := encrypt.EncryptEncode(trendingMovies)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -163,49 +133,21 @@ func recommendedHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	files, err := read.GetFiles("must_watch")
-	if err != nil {
-		http.Error(w, "Failed to get trending files", http.StatusInternalServerError)
-		return
-	}
+	// files, err := read.GetFiles("must_watch")
+	// if err != nil {
+	// 	http.Error(w, "Failed to get trending files", http.StatusInternalServerError)
+	// 	return
+	// }
+	recommendedMovies := mongo.Recommended()
 
 	w.Header().Set("Access-Control-Allow-Origin", origin) // Allow all origins (you can specify specific origins here)
 	w.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
 	w.Header().Set("Content-Type", "application/json")
 
-	if files != nil {
-
-		fileContentsChan := make(chan []byte)
-
-		for _, file := range files {
-			go func(filename string) {
-				contents, err := read.ReadFileContents(filename)
-				if err != nil {
-					log.Println("Error while trying to read " + filename + " file contents")
-					log.Println(err)
-					http.Error(w, "Failed to read file contents", http.StatusInternalServerError)
-					return
-				}
-				fileContentsChan <- contents
-			}(file)
-		}
-
-		var filesData []map[string]interface{}
-
-		for range files {
-
-			var fileData map[string]interface{}
-			err := json.Unmarshal(<-fileContentsChan, &fileData)
-			if err != nil {
-				http.Error(w, "Failed to read file contents", http.StatusInternalServerError)
-				return
-			}
-
-			filesData = append(filesData, fileData)
-		}
+	if len(recommendedMovies) > 0 {
 
 		// Encrypt & Encode filesData
-		encodedText, err := encrypt.EncryptEncode(filesData)
+		encodedText, err := encrypt.EncryptEncode(recommendedMovies)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
