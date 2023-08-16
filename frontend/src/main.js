@@ -8,7 +8,7 @@ import {
   Trending,
 } from "./components/cimaTube/api.js";
 import { apiUrl, options } from "./components/cimaTube/url.js";
-import { Decrypt } from "./utils/encryption/encrypt.js";
+// import { Decrypt } from "./utils/encryption/encrypt.js";
 import { RequestData } from "./components/cimaTube/Request.js";
 (async () => {
   let res = await Home(apiUrl, options);

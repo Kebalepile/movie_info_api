@@ -1,19 +1,16 @@
 package encrypt
 
 import (
+	"io"
+	"os"
+	"fmt"
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/json"
-	
-	"fmt"
-	"io"
-	
-	"os"
 	"path/filepath"
-	
 
-	"golang.org/x/crypto/pbkdf2"
 	"github.com/Kebalepile/movie_info_api/environment"
+	"golang.org/x/crypto/pbkdf2"
 )
 
 // EncryptionKey represents the encryption key used for encrypting and decrypting data.

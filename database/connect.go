@@ -4,7 +4,6 @@ import (
 	"context"
 	"log"
 	"maps"
-	// "encoding/json"
 	"github.com/Kebalepile/movie_info_api/environment"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
