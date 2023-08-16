@@ -41,7 +41,7 @@ func requestHandler(w http.ResponseWriter, r *http.Request) {
 
 	userRequest := encrypt.DecodeCipherText(encodedCipherText)
 
-	message, err := read.EndUserRequest(userRequest)
+	message, err := read.MovieRequest(userRequest)
 	if err != nil {
 
 		http.Error(w, "Failed to log end-user request", http.StatusInternalServerError)
@@ -133,11 +133,6 @@ func recommendedHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// files, err := read.GetFiles("must_watch")
-	// if err != nil {
-	// 	http.Error(w, "Failed to get trending files", http.StatusInternalServerError)
-	// 	return
-	// }
 	recommendedMovies := mongo.Recommended()
 
 	w.Header().Set("Access-Control-Allow-Origin", origin) // Allow all origins (you can specify specific origins here)

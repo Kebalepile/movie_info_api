@@ -1,18 +1,10 @@
 package main
 
 import (
-	// "github.com/Kebalepile/movie_info_api/server"
-	mongo "github.com/Kebalepile/movie_info_api/database"
-	"fmt"
+	"github.com/Kebalepile/movie_info_api/server"
 )
 
 func main() {
-	// server.Init()
-	trendingMovies := mongo.Trending()
-	fmt.Println(len(trendingMovies))
-	recommendedMovies := mongo.Recommended()
-	fmt.Println(len(recommendedMovies))
+	server.Init()
 
 }
-
-

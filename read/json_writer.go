@@ -2,10 +2,10 @@ package read
 
 import (
 	"encoding/json"
+	mongo "github.com/Kebalepile/movie_info_api/database"
 	"io"
 	"os"
 	"path/filepath"
-	mongo "github.com/Kebalepile/movie_info_api/database"
 )
 
 var file_path = filepath.Join("files", "requests", "search_requests.json")
@@ -72,7 +72,10 @@ func EndUserRequest(end_user_request Request) (map[string]string, error) {
 	return map[string]string{"msg": "Your request has been successfully logged, will get back to you within 48hours"}, nil
 }
 func MovieRequest(movieRequest Request) (map[string]string, error) {
-	mongo.Request(movieRequest)
+	if saved := mongo.Request(movieRequest); saved {
+		return map[string]string{"msg": "Your request has been successfully logged, will get back to you within 48hours"}, nil
+	} else {
+		return map[string]string{"msg": "Your request is not successful"}, nil
 
-	return map[string]string{"msg": "Your request has been successfully logged, will get back to you within 48hours"}, nil
+	}
 }

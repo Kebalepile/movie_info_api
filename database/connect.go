@@ -1,8 +1,10 @@
 package database
+
 import (
 	"context"
+	"log"
 	"maps"
-	"encoding/json"
+	// "encoding/json"
 	"github.com/Kebalepile/movie_info_api/environment"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -25,10 +27,11 @@ var (
 		"comming_soon_movies",
 	}
 )
+
 /*
 *@description Constructs
  */
- func MongoDBUri() string {
+func MongoDBUri() string {
 	params := environment.Read()
 
 	return params["DB_HOST"] + "://" + params["DB_USER"] + ":" + params["DB_PASSWORD"] + "@cluster0.mcpuyxa.mongodb.net/?retryWrites=true&w=majority"
@@ -119,11 +122,28 @@ func Request(mRequest struct {
 	Query       string `json:"query"`
 	Email       string `json:"email"`
 	MediaHandle string `json:"mediaHandle"`
-})     bool{
-	bytes, err := json.Marshal(mRequest)
+}) bool {
+	searchRequest, err := bson.Marshal(mRequest)
 	if err != nil {
-panic(rr)
+		log.Println(err)
+		return false
 	}
-	
+	// Pass in the URI and the ClientOptions to the Client
+	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(uri))
+	if err != nil {
+		panic(err)
+	}
+	// close coonection once once with connection
+	defer func() {
+		if err := client.Disconnect(context.TODO()); err != nil {
+			panic(err)
+		}
+	}()
+	coll := client.Database(dbName).Collection(names[1])
 
+	if _, err = coll.InsertOne(context.TODO(), searchRequest); err != nil {
+		return false
+	}
+
+	return true
 }
