@@ -116,7 +116,40 @@ func Recommended() []map[string]any {
 	return recommended
 
 }
-func CommingSoon() {}
+func CommingSoon() []map[string]any {
+	var commingSoon []map[string]any
+	connect(func(client *mongo.Client, commingSoon *[]map[string]any) {
+
+		defer func() {
+			if err := client.Disconnect(context.TODO()); err != nil {
+				panic(err)
+			}
+		}()
+
+		coll := client.Database(dbName).Collection(names[3])
+		// Create an empty filter to match all documents
+		filter := bson.D{{}}
+
+		cursor, err := coll.Find(context.TODO(), filter)
+		if err != nil {
+			panic(err)
+		}
+
+		if err := cursor.All(context.TODO(), commingSoon); err != nil {
+			panic(err)
+		}
+
+		for _, m := range *commingSoon {
+			maps.DeleteFunc(m, func(k string, val interface{}) bool {
+				return k == "_id"
+			})
+		}
+
+	}, &commingSoon)
+
+	return commingSoon
+
+}
 func Request(mRequest struct {
 	Date        string `json:"date"`
 	Query       string `json:"query"`
