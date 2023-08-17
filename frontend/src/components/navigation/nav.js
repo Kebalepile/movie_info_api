@@ -20,18 +20,18 @@ export default () => {
                   i === 0
                     ? {
                         type: "a",
-                        content: "home",
+                        content: "Home",
                         attributes: { href: "./index.html" },
                       }
                     : i === 1
                     ? {
                         type: "a",
-                        content: "movies",
+                        content: "Movies",
                         attributes: { href: "./movies.html" },
                       }
                     : {
                         type: "a",
-                        content: "about",
+                        content: "About",
                         attributes: { href: "./about.html" },
                       },
                 ],
