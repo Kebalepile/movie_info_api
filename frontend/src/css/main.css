@@ -54,9 +54,31 @@ body {
 
   filter: brightness(65%);
   color: rgb(255, 255, 255);
-  text-align: justify;
-  padding: 50px;
+  text-align: center;
+  /* padding: 50px; */
   border-radius: 5px;
+
+}
+.banner_msg{
+  position: absolute;
+}
+.banner_msg {
+  z-index: 3;
+  width: inherit;
+  height: inherit;
+  border-radius: inherit;
+  position: absolute;
+  background-color: transparent;
+  opacity: 0;
+  transition: background-color 0.3s, opacity 0.3s;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+}
+#welcome_banner:hover .banner_msg {
+  opacity: 1;
+  background-color: #0c0c0ce1;
+  
 }
 #welcome_banner:hover {
   filter: brightness(100%);

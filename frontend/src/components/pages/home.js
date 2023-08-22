@@ -15,16 +15,15 @@ async function Home() {
           type: "article",
           id: "welcome_banner",
           children: [
-            { type: "h1", content: "Stream Free Movies & TV Shows " },
             {
-              type: "br",
-            },
-            {
-              type: "h2",
-              content:
-                "Browse and Watch all your favorite online movies & series for free!",
+              type: "h1",
+              classes: "banner_msg",
+              content: "Stream Movies, Series & TV Shows ",
             },
           ],
+        },
+        {
+          type: "br",
         },
       ],
     })
@@ -64,12 +63,16 @@ async function Home() {
         poster.appendChild(posterShadow);
         poster.appendChild(img);
         poster.appendChild(caption);
+        poster.addEventListener("click", () => {
+          console.log(data);
+        });
         postersElem.appendChild(poster);
       });
       trendingSlide.appendChild(br);
       trendingSlide.appendChild(h1);
       trendingSlide.appendChild(br);
       trendingSlide.appendChild(postersElem);
+
       homePage.appendChild(trendingSlide);
     }
     const recommended = await Recommended(apiUrl, options);
@@ -106,6 +109,9 @@ async function Home() {
         poster.appendChild(posterShadow);
         poster.appendChild(img);
         poster.appendChild(caption);
+        poster.addEventListener("click", () => {
+          console.log(data);
+        });
         postersElem.appendChild(poster);
       });
       recommendedSlide.appendChild(br);
