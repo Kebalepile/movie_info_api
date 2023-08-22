@@ -76,11 +76,9 @@ body {
   width: 200px;
   border-radius: 3px;
   margin: 5px;
+  position: relative;
 }
-.poster a {
-  width: inherit;
-  height: inherit;
-}
+
 .poster_shadow {
   z-index: 3;
   width: inherit;
