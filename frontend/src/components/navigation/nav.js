@@ -13,7 +13,7 @@ export default () => {
             {
               type: "ul",
               id: "nav_links",
-              children: new Array(3).fill().map((_, i) => ({
+              children: new Array(2).fill().map((_, i) => ({
                 type: "li",
                 class: "page_link",
                 children: [
@@ -23,12 +23,7 @@ export default () => {
                         content: "Home",
                         attributes: { href: "./index.html" },
                       }
-                    : i === 1
-                    ? {
-                        type: "a",
-                        content: "Movies",
-                        attributes: { href: "./movies.html" },
-                      }
+                    
                     : {
                         type: "a",
                         content: "About",

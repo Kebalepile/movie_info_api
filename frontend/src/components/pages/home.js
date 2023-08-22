@@ -97,11 +97,16 @@ function createPoster(parent, data) {
     poster.appendChild(posterShadow);
     poster.appendChild(img);
     poster.appendChild(caption);
+    poster.setAttribute("title", d.title);
     poster.addEventListener("click", () => {
-      console.log(d);
+      const params = new URLSearchParams();
+      params.set("p", d.poster);
+      params.set("t", d.title);
+      params.set("s", d.src);
+      const urlWithParams = "/frontend/watch.html?" + params.toString();
+      location.replace(urlWithParams);
     });
     poster.addEventListener("contextmenu", (e) => {
-      console.log("context");
       e.preventDefault();
     });
     parent.appendChild(poster);
