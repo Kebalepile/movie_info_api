@@ -86,7 +86,7 @@ body {
   width: inherit;
   height: inherit;
   border-radius: inherit;
-  position: relative;
+  position: absolute;
   background-color: transparent;
   opacity: 0;
   transition: background-color 0.3s, opacity 0.3s;
@@ -143,10 +143,10 @@ body {
 #search {
 }
 #controls {
-} */
+}  */
 
 /* Scrollbar Styles */
-/* ::-webkit-scrollbar {
+::-webkit-scrollbar {
   height: 4px;
   width: 5px;
 }
@@ -160,4 +160,4 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background-color: #b9b9b9;
-} */
+}
