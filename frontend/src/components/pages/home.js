@@ -42,32 +42,7 @@ async function Home() {
       const postersElem = document.createElement("div");
       postersElem.classList.add("posters");
 
-      streamingNow.forEach((data) => {
-        const poster = document.createElement("figure");
-        poster.classList.add("poster");
-
-        const posterShadow = document.createElement("div");
-        posterShadow.classList.add("poster_shadow");
-
-        const playButton = document.createElement("span");
-        playButton.classList.add("play_button");
-        playButton.textContent = "▶";
-        posterShadow.appendChild(playButton);
-
-        const img = document.createElement("img");
-        img.src = data.poster;
-        img.alt = "Movie poster";
-        const caption = document.createElement("figcaption");
-        caption.textContent = data.title;
-
-        poster.appendChild(posterShadow);
-        poster.appendChild(img);
-        poster.appendChild(caption);
-        poster.addEventListener("click", () => {
-          console.log(data);
-        });
-        postersElem.appendChild(poster);
-      });
+      createPoster(postersElem, streamingNow);
       trendingSlide.appendChild(br);
       trendingSlide.appendChild(h1);
       trendingSlide.appendChild(br);
@@ -86,34 +61,7 @@ async function Home() {
 
       const postersElem = document.createElement("div");
       postersElem.classList.add("posters");
-
-      recommended.forEach((data) => {
-        const poster = document.createElement("figure");
-        poster.classList.add("poster");
-
-        const posterShadow = document.createElement("div");
-        posterShadow.classList.add("poster_shadow");
-
-        const playButton = document.createElement("span");
-        playButton.classList.add("play_button");
-        playButton.textContent = "▶";
-        posterShadow.appendChild(playButton);
-
-        const img = document.createElement("img");
-        img.src = data.poster;
-        img.alt = "Movie poster";
-        img.setAttribute("loading", "lazy");
-        const caption = document.createElement("figcaption");
-        caption.textContent = data.title;
-
-        poster.appendChild(posterShadow);
-        poster.appendChild(img);
-        poster.appendChild(caption);
-        poster.addEventListener("click", () => {
-          console.log(data);
-        });
-        postersElem.appendChild(poster);
-      });
+      createPoster(postersElem, recommended);
       recommendedSlide.appendChild(br);
       recommendedSlide.appendChild(h1);
       recommendedSlide.appendChild(br);
@@ -123,6 +71,41 @@ async function Home() {
   } catch (err) {
     console.log(err);
   }
+}
+
+function createPoster(parent, data) {
+  data.forEach((d) => {
+    const poster = document.createElement("figure");
+    poster.classList.add("poster");
+
+    const posterShadow = document.createElement("div");
+    posterShadow.classList.add("poster_shadow");
+
+    const playButton = document.createElement("span");
+    playButton.classList.add("play_button");
+    playButton.textContent = "▶";
+    posterShadow.appendChild(playButton);
+
+    const img = document.createElement("img");
+    img.src = d.poster;
+    img.alt = "Movie poster";
+    img.setAttribute("loading", "lazy");
+
+    const caption = document.createElement("figcaption");
+    caption.textContent = d.title;
+
+    poster.appendChild(posterShadow);
+    poster.appendChild(img);
+    poster.appendChild(caption);
+    poster.addEventListener("click", () => {
+      console.log(d);
+    });
+    poster.addEventListener("contextmenu", (e) => {
+      console.log("context");
+      e.preventDefault();
+    });
+    parent.appendChild(poster);
+  });
 }
 
 Home();
