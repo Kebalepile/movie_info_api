@@ -9,7 +9,23 @@ export default () => {
         {
           type: "nav",
           id: "navigation",
+          classes:"menu",
           children: [
+            {
+              type:"input",
+              id:"toggle",
+              attributes:{type:"checkbox"}
+            },
+            {
+              type:"label",
+              attributes:{for:"toggle"},
+              children:[
+                {
+                  type:"span",
+                  content:String.fromCharCode(9776)
+                }
+              ]
+            },
             {
               type: "ul",
               id: "nav_links",
