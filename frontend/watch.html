@@ -5,8 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Rusty-Movies</title>
     <link rel="stylesheet" href="./src/css/main.css" />
-    <script defer type="module" src="./src/main.js"></script>
-    <script defer type="module" src="./src/components/pages/watch.js"></script>
+    <!-- <script defer type="module" src="./src/main.js"></script> -->
+    <!-- <script defer type="module" src="./src/components/pages/watch.js"></script> -->
   </head>
-  <body></body>
+  <body>
+    <h1>watch</h1>
+    <section class="video-container">
+      <video src="#" controls></video>
+      <div id="control-buttons">
+        <button id="backward"><</button>
+        <button id="play-pause">play/pause</button>
+        <button id="forward">></button>
+      </div>
+      <div id="settings">Settings</div>
+
+      <section id="controls">
+        <div>
+          <div id="time">time</div>
+           <div id="fullscreen">[]</div>
+        </div>
+        <div id="track">
+          <div id="duration"></div>
+        </div>
+      </section>
+    </section>
+  </body>
 </html>
