@@ -23,7 +23,7 @@ var (
 		"trending_movies",
 		"request_movies",
 		"recommended_movies",
-		"comming_soon_movies",
+		"coming_soon_movies",
 	}
 )
 
@@ -33,8 +33,7 @@ var (
 func MongoDBUri() string {
 	params := environment.Read()
 
-	return params["DB_HOST"] + "://" + params["DB_USER"] + ":" + params["DB_PASSWORD"] + "@cluster0.mcpuyxa.mongodb.net/?retryWrites=true&w=majority"
-
+	return params["DB_HOST"] + "://" + params["DB_USER"] + ":" + params["DB_PASSWORD"] + "@cluster0.bdl296a.mongodb.net/?retryWrites=true&w=majority"
 }
 
 func connect(callback func(*mongo.Client, *[]map[string]any), results *[]map[string]any) {
