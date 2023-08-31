@@ -238,7 +238,7 @@ input[type="checkbox"]:checked ~ ul {
   margin: auto;
   border-radius: 3px;
 }
-.video-container:hover{
+.video-container:hover {
   border: 1px solid white;
 }
 .video-container video {
@@ -287,14 +287,16 @@ input[type="checkbox"]:checked ~ ul {
   display: flex;
   justify-content: center;
   align-items: center;
-  width:98%;
+  width: 98%;
   height: 8px;
   background: red;
+  border-radius: 3px;
 }
 #duration {
   background-color: pink;
-  width: inherit;
+  width: 100%;
   height: 4px;
+  border-radius: inherit;
 }
 
 button {
