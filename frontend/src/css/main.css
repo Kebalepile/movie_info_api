@@ -5,6 +5,9 @@
   --c2: #1c242c;
   --c3: #161c23;
   --c4: #8d8a8a;
+  --c5: #0c0c0ce1;
+  --c6: lime;
+  --c7: #b9b9b9;
 }
 * {
   font-family: "Robot", sans-serif;
@@ -64,11 +67,9 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   transition: filter 0.3s, box-shadow 0.3s;
-
   filter: brightness(65%);
   color: rgb(255, 255, 255);
   text-align: center;
-  /* padding: 50px; */
   border-radius: 5px;
 }
 .banner_msg {
@@ -89,7 +90,7 @@ body {
 }
 #welcome_banner:hover .banner_msg {
   opacity: 1;
-  background-color: #0c0c0ce1;
+  background-color: var(--c5);
 }
 #welcome_banner:hover {
   filter: brightness(100%);
@@ -127,7 +128,7 @@ body {
 }
 .poster:hover .poster_shadow {
   opacity: 1;
-  background-color: #0c0c0ce1;
+  background-color: var(--c5);
 }
 .play_button {
   font-size: 0;
@@ -154,7 +155,7 @@ body {
   color: var(--c4);
 }
 .poster figcaption:hover {
-  color: lime;
+  color: var(--c6);
 }
 #trending {
   margin-top: 300px;
@@ -190,7 +191,7 @@ body {
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #b9b9b9;
+  background-color: var(--c7);
 }
 .menu {
   position: relative;
@@ -289,14 +290,15 @@ input[type="checkbox"]:checked ~ ul {
   align-items: center;
   width: 98%;
   height: 8px;
-  background: red;
-  border-radius: 3px;
+  background: var(--c5);
+  border-radius: 2px;
 }
 #duration {
-  background-color: pink;
-  width: 100%;
+  background-color: var(--c6);
+  width: 50%;
   height: 4px;
   border-radius: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.877);
 }
 
 button {
