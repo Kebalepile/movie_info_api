@@ -157,7 +157,6 @@ body {
   color: lime;
 }
 #trending {
-  /* position:relative; */
   margin-top: 300px;
 }
 
@@ -176,15 +175,6 @@ body {
 #video_container video:poster {
   object-fit: cover;
 }
-/* #recommended {
-}
-#coming_soon {
-}
-
-#search {
-}
-#controls {
-}  */
 
 /* Scrollbar Styles */
 ::-webkit-scrollbar {
@@ -243,9 +233,13 @@ input[type="checkbox"]:checked ~ ul {
   grid-template-columns: repeat(10, auto);
   grid-template-rows: repeat(10, auto);
   gap: 4px;
-  background-color: gray;
+  /* remove background-color */
+  /* background-color: gray; */
   margin: auto;
   border-radius: 3px;
+}
+.video-container:hover{
+  border: 1px solid white;
 }
 .video-container video {
   grid-column: 1/11;
@@ -257,42 +251,89 @@ input[type="checkbox"]:checked ~ ul {
   z-index: 2;
   grid-column: 1/11;
   grid-row: 5/5;
-  background-color: pink;
   display: flex;
   justify-content: space-evenly;
+  justify-items: center;
   flex-flow: row nowrap;
 }
 #settings {
   z-index: 2;
-  background-color: pink;
-  grid-column: 9/9;
+  grid-column: 10/10;
   grid-row: 2/2;
+  border-radius: 50%;
+  height: 60px;
+  width: 60px;
+  padding-right: 15px;
 }
+
 #controls {
   z-index: 2;
-  background-color: pink;
   grid-column: 1/11;
   grid-row: 9/9;
-  display: flex;  
+  display: flex;
   flex-direction: column;
 }
-#controls > * {
-  background-color: gray;
-}
-#controls > *:first-child{
+
+#controls > *:first-child {
   display: flex;
   justify-content: space-between;
   flex-flow: row nowrap;
-  padding:15px;
+  padding: 15px;
 }
 
 #track {
-  align-self: flex-end;
+  align-self: center;
   justify-self: center;
-  width: 100%;
-  height: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width:98%;
+  height: 8px;
   background: red;
 }
-/* #duration{} */
+#duration {
+  background-color: pink;
+  width: inherit;
+  height: 4px;
+}
 
+button {
+  background-color: transparent;
 
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.svg_img {
+  width: 100%;
+  height: 100%;
+  filter: invert(100%);
+}
+
+#play-pause,
+#forward,
+#backward {
+  width: 150px;
+  height: 150px;
+}
+#backward .svg_img {
+  width: 50%;
+  height: 50%;
+  transform: rotate(180deg);
+}
+#forward .svg_img {
+  width: 50%;
+  height: 50%;
+}
+#fullscreen {
+  background-color: transparent;
+  width: 50px;
+  height: 50px;
+}
+#time {
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

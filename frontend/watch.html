@@ -11,18 +11,52 @@
   <body>
     <h1>watch</h1>
     <section class="video-container">
-      <video src="#" controls></video>
+      <video src="#" ></video>
       <div id="control-buttons">
-        <button id="backward"><</button>
-        <button id="play-pause">play/pause</button>
-        <button id="forward">></button>
+        <button id="backward">
+          <img
+            src="./src/image/icons/skip.svg"
+            alt="skip backward icon"
+            loading="lazy"
+            class="svg_img"
+          />
+        </button>
+        <button id="play-pause">
+          <img
+            src="./src/image/icons/play-pause.svg"
+            loading="lazy"
+            class="svg_img"
+            alt="play pause icon"
+          />
+        </button>
+        <button id="forward">
+          <img
+            src="./src/image/icons/skip.svg"
+            alt="skip forward icon"
+            loading="lazy"
+            class="svg_img"
+          />
+        </button>
       </div>
-      <div id="settings">Settings</div>
+      <div id="settings">
+        <img
+          loading="lazy"
+          class="svg_img"
+          src="./src/image/icons/settings.svg"
+          alt="settings icon"
+        />
+      </div>
 
       <section id="controls">
         <div>
           <div id="time">time</div>
-           <div id="fullscreen">[]</div>
+          <div id="fullscreen">
+            <img
+              class="svg_img"
+              src="./src/image/icons/fullscreen.svg"
+              alt="fullscreen icon"
+            />
+          </div>
         </div>
         <div id="track">
           <div id="duration"></div>
