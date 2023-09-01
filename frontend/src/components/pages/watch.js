@@ -1,89 +1,88 @@
-function Movies() {
+function watch() {
   //  Get URL params
   const urlParams = new URLSearchParams(location.search);
 
-  const video = document.createElement("video");
-  video.setAttribute("id", "watch");
-  video.setAttribute("src", urlParams.get("s"));
-  video.setAttribute("title", urlParams.get("t"));
-  video.setAttribute("poster", urlParams.get("p"));
+  const settings = document.querySelector("#settings"),
+    video = document.querySelector("#media-player"),
+    skipBackward = document.querySelector("#backward"),
+    skipForward = document.querySelector("#forward"),
+    playPause = document.querySelector("#play-pause"),
+    time = document.querySelector("#time"),
+    fullscreen = document.querySelector("#fullscreen"),
+    track = document.querySelector("#track"),
+    durationTrack = document.querySelector("#duration");
 
+  // set video attributes.
+  // video.setAttribute("src", urlParams.get("s"));
+  // video.setAttribute("title", urlParams.get("t"));
+  // video.setAttribute("poster", urlParams.get("p"));
   video.addEventListener("contextmenu", (e) => {
     e.preventDefault();
   });
-
-  const videoContainer = document.createElement("section");
-  videoContainer.setAttribute("id", "video_container");
-  videoContainer.appendChild(video);
-  document.body.appendChild(videoContainer);
-  videoControls(video);
-}
-
-Movies();
-
-function videoControls(video) {
-  const buttonElements = [
-    "full-screen",
-    "backward",
-    "play/pause",
-    "forward",
-    "settings",
-  ].forEach((n) => {
-    const elem = document.createElement("button");
-    elem.textContent = n;
-    switch (n) {
-      case "full-screen":
-        elem.addEventListener("click", (e) => {
-          console.log(n);
-          console.dir(video);
-        });
-        break;
-      case "backward":
-        /**@description backforward click event */
-        elem.addEventListener("click", (e) => {
-          video.currentTime -= 10;
-        });
-        break;
-      case "play/pause":
-        /**@description play pause click event */
-        elem.addEventListener("click", (e) => {
-          video.paused ? video.play() : video.pause();
-        });
-        break;
-      case "forward":
-        /**@description skipforward click event */
-        elem.addEventListener("click", (e) => {
-          video.currentTime += 10;
-        });
-        break;
-      case "settings":
-        elem.addEventListener("click", (e) => {
-          console.log(n);
-          console.dir(video);
-        });
-        break;
-      case "pictureInPicture":
-        elem.addEventListener("click", (e) => {
-          video.disablePictureInPicture = false;
-          video.disableRemotePlayback = false;
-
-          if (video.nodeName === "VIDEO") {
-            if (video !== document.pictureInPictureElement) {
-              video.requestPictureInPicture();
-            } else {
-              document.exitPictureInPicture();
-            }
-          }
-        });
-        break;
-      default:
-        break;
-    }
-    document.body.appendChild(elem);
+  // set control buttons events
+  /**@description play pause click event */
+  playPause.addEventListener("click", (e) => {
+    video.paused ? video.play() : video.pause();
   });
-  // const volume = "volume";
-  // const settings = "s"
+  /**@description skipforward click event */
+  skipForward.addEventListener("click", (e) => {
+    video.currentTime += 10;
+  });
+  /**@description backforward click event */
+  skipBackward.addEventListener("click", (e) => {
+    video.currentTime -= 10;
+  });
+
+  const handletrackVideoTime = () => {
+    try {
+      /**@description handle track video time */
+      const duration = mediaTrackTime(video.duration),
+        currentTime = mediaTrackTime(video.currentTime);
+      track.style.width = `${(
+        (Math.floor(currentTime) / Math.floor(duration)) *
+        100
+      ).toFixed(0)}%`;
+      time.textContent = `${currentTime} / ${duration}`;
+    } catch (err) {
+      stopInterval();
+    }
+  };
+  let intervalId;
+  const startInterval = () => {
+    clearInterval(intervalId);
+    intervalId = setInterval(handletrackVideoTime, 1000);
+  };
+  const stopInterval = () => {
+    clearInterval(intervalId);
+  };
+  startInterval();
+  /**@description toggle settings dialog */
+  const settingsDialog = document.querySelector("#settings-dialog");
+  const settingsIcon = settings.querySelector("img");
+  let showModal = true;
+  settingsIcon.addEventListener("click", () => {
+    
+    settingsDialog.style.display = showModal ? "block" : "none";
+    showModal = !showModal;
+  });
+
+  // pictuire in picture
+  // addEventListener("click", (e) => {
+  //         video.disablePictureInPicture = false;
+  //         video.disableRemotePlayback = false;
+
+  //         if (video.nodeName === "VIDEO") {
+  //           if (video !== document.pictureInPictureElement) {
+  //             video.requestPictureInPicture();
+  //           } else {
+  //             document.exitPictureInPicture();
+  //           }
+  //         }
+  //       });
 }
+
+watch();
+
 import { formatTime } from "../../utils/time.js";
 function volume(media, change) {
   const currentVolume = Math.min(Math.max(media.volume + change, 0), 1);

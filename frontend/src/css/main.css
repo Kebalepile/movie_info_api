@@ -234,8 +234,6 @@ input[type="checkbox"]:checked ~ ul {
   grid-template-columns: repeat(10, auto);
   grid-template-rows: repeat(10, auto);
   gap: 4px;
-  /* remove background-color */
-  /* background-color: gray; */
   margin: auto;
   border-radius: 3px;
 }
@@ -265,6 +263,27 @@ input[type="checkbox"]:checked ~ ul {
   height: 60px;
   width: 60px;
   padding-right: 15px;
+  position:relative;
+}
+#settings-dialog{
+  width:70px;
+  height:100px;
+  display:none;
+  padding-right:20px;
+}
+#settings-dialog > ol{
+  background-color:var(--c4);
+  width:70px;
+  list-style: none;
+  border-radius:3px;
+}
+
+#settings> img {
+  transition: transform 400ms;
+}
+#settings> img:hover{
+  
+  transform:rotate(90deg);
 }
 
 #controls {

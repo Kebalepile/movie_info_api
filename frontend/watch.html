@@ -6,13 +6,12 @@
     <title>Rusty-Movies</title>
     <link rel="stylesheet" href="./src/css/main.css" />
     <!-- <script defer type="module" src="./src/main.js"></script> -->
-    <!-- <script defer type="module" src="./src/components/pages/watch.js"></script> -->
+    <script defer type="module" src="./src/components/pages/watch.js"></script>
   </head>
   <body>
     <h1>watch</h1>
     <section class="video-container">
-      <video  >
-        <source src="#" type="mp4">
+      <video id="media-player">
       </video>
       <div id="control-buttons">
         <button id="backward">
@@ -47,6 +46,13 @@
           src="./src/image/icons/settings.svg"
           alt="settings icon"
         />
+        <article id="settings-dialog" >
+          <ol>
+            <li>volume +</li>
+            <li>volume -</li>
+            <li>picture in picture</li>
+          </ol>
+        </article>
       </div>
 
       <section id="controls">
