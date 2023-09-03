@@ -1,4 +1,3 @@
-@import url("https://fonts.googleapis.com/css?family=Robot:400,700&display=swap");
 
 :root {
   --main: #252525;
@@ -10,7 +9,7 @@
   --c7: #b9b9b9;
 }
 * {
-  font-family: "Robot", sans-serif;
+  font-family: sans-serif;
 
   box-sizing: border-box;
   padding: 0;
@@ -176,7 +175,7 @@ body {
 #video_container > video::poster {
   object-fit: cover;
   width:100%;
-  height:auto;
+  max-height:300px;
 }
 
 /* Scrollbar Styles */
@@ -267,17 +266,24 @@ input[type="checkbox"]:checked ~ ul {
   padding-right: 15px;
   position:relative;
 }
-#settings-dialog{
+#settings-controls{
   width:70px;
   height:100px;
   display:none;
   padding-right:20px;
 }
-#settings-dialog > ol{
+#settings-controls > ol{
   background-color:var(--c4);
   width:70px;
   list-style: none;
   border-radius:3px;
+}
+#settings-controls > ol > li {
+  margin:3px;
+}
+#settings-controls > ol > li > button {
+  background-color:red;
+  width:70px;
 }
 
 #settings> img {
@@ -314,11 +320,13 @@ input[type="checkbox"]:checked ~ ul {
   background: var(--c5);
   border-radius: 2px;
 }
+
 #duration {
   background-color: var(--c6);
   height: 4px;
   border-radius: inherit;
-  border: 1px solid rgba(255, 255, 255, 0.877);
+  border: 1px solid rgba(255, 255, 255, 0.692);
+ 
 }
 
 button {

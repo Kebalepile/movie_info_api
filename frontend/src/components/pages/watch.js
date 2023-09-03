@@ -9,8 +9,13 @@ function watch() {
     playPause = document.querySelector("#play-pause"),
     time = document.querySelector("#time"),
     fullscreen = document.querySelector("#fullscreen"),
-    track = document.querySelector("#track"),
-    durationTrack = document.querySelector("#duration");
+    increasevolume = document.querySelector('[name="increase-volume"]'),
+    decreasevolume = document.querySelector('[name="decrease-volume"]'),
+    pictureInPicture = document.querySelector('[name="picture-in-picture"]'),
+    increaseRate = document.querySelector('[name="increase-rate"]'),
+    decreaseRate = document.querySelector('[name="decrease-rate"]'),
+    durationTrack = document.querySelector("#duration"),
+    skipTrack = document.querySelector("#track");
 
   // set video attributes.
   video.setAttribute("src", urlParams.get("s"));
@@ -39,13 +44,20 @@ function watch() {
   const handletrackVideoTime = () => {
     try {
       /**@description handle track video time */
-      const duration = mediaTrackTime(video.duration),
-        currentTime = mediaTrackTime(video.currentTime);
-
-      durationTrack.style.width = `${(
-        (Math.floor(currentTime) / Math.floor(duration)) *
+      const duration = isNaN(video.duration)
+          ? "0:00"
+          : mediaTrackTime(video.duration),
+        currentTime = isNaN(video.currentTime)
+          ? "0:00"
+          : mediaTrackTime(video.currentTime);
+      const percent = (
+        (Math.floor(video.currentTime) / Math.floor(video.duration)) *
         100
-      ).toFixed(0)}%`;
+      ).toFixed(0);
+      if (!isNaN(percent)) {
+        durationTrack.style.width = `${percent}%`;
+      }
+
       time.textContent = `${currentTime} / ${duration}`;
     } catch (err) {
       stopInterval();
@@ -60,33 +72,64 @@ function watch() {
     clearInterval(intervalId);
   };
   startInterval();
-  /**@description toggle settings dialog */
-  const settingsDialog = document.querySelector("#settings-dialog");
+  /**@description toggle settings Controls */
+  const settingsControls = document.querySelector("#settings-controls");
   const settingsIcon = settings.querySelector("img");
   let showModal = true;
   settingsIcon.addEventListener("click", () => {
-    settingsDialog.style.display = showModal ? "block" : "none";
+    settingsControls.style.display = showModal ? "block" : "none";
     showModal = !showModal;
   });
 
-  // pictuire in picture
-  // addEventListener("click", (e) => {
-  //         video.disablePictureInPicture = false;
-  //         video.disableRemotePlayback = false;
+  // picture in picture
+  pictureInPicture.addEventListener("click", (e) => {
+    video.disablePictureInPicture = false;
+    video.disableRemotePlayback = false;
 
-  //         if (video.nodeName === "VIDEO") {
-  //           if (video !== document.pictureInPictureElement) {
-  //             video.requestPictureInPicture();
-  //           } else {
-  //             document.exitPictureInPicture();
-  //           }
-  //         }
-  //       });
+    if (video.nodeName === "VIDEO") {
+      if (video !== document.pictureInPictureElement) {
+        video.requestPictureInPicture();
+      } else {
+        document.exitPictureInPicture();
+      }
+    }
+  });
+  // volume settings
+  increasevolume.addEventListener("click", () => {
+    volume(video, 0.1);
+  });
+  decreasevolume.addEventListener("click", () => {
+    volume(video, -0.1);
+  });
+  //  playbackRate settings
+  increaseRate.addEventListener("click", () => {
+    playBackRate(video, 0.1);
+  });
+  decreaseRate.addEventListener("click", () => {
+    playBackRate(video, -0.1);
+  });
+  // fullscreen settings
+  fullscreen.addEventListener("click", () => {
+    console.log("fullscreen enabled");
+  });
+  // vidoe track duration
+  skipTrack.addEventListener("click", (event) => {
+    const clickX = event.clientX - skipTrack.getBoundingClientRect().left;
+    const skipWidth = skipTrack.offsetWidth;
+    const percentClicked = ((clickX / skipWidth) * 100).toFixed(0);
+    durationTrack.style.width = `${percentClicked}%`;
+    video.currentTime = (percentClicked / 100) * video.duration;
+  });
 }
 
 watch();
 
-import { formatTime } from "../../utils/time.js";
+/**
+ *
+ * @param {Element} media
+ * @param {Number} change
+ * @description change volume of given video object element
+ */
 function volume(media, change) {
   const currentVolume = Math.min(Math.max(media.volume + change, 0), 1);
   media.volume = currentVolume;
@@ -100,56 +143,35 @@ function playBackRate(media, change) {
   media.playbackRate = currentPlaybBackRate;
 }
 
-function mediaEnded(element, media, autoPlayFiles, ms = 3000) {
-  setTimeout(() => {
-    autoPlayFiles(JSON.parse(localStorage.getItem("auto_play")));
-    element.removeEventListener("ended", mediaEnded);
-  }, ms);
-}
-
-function fullScreenChange(event) {
-  let video = event.target;
-
-  video.disablePictureInPicture = true;
-  video.disableRemotePlayback = true;
-}
-function fullScreen(media) {
-  try {
-    if (media.nodeName == "VIDEO") {
-      if (media.requestFullscreen) {
-        media.requestFullscreen();
-      } else if (media.webkitRequestFullscreen) {
-        media.webkitRequestFullscreen(); //Safari
-      } else if (media.msRequestFullscreen) {
-        media.msRequestFullscreen(); //IE11
-      }
-    }
-  } catch (error) {
-    console.error(error);
-  }
-}
-
+import { formatTime } from "../../utils/time.js";
 function mediaTrackTime(mediaTime) {
   return formatTime(Math.floor(mediaTime));
 }
 
-// const video = document.getElementById('my-video');
-// const customControls = document.getElementById('custom-controls');
+// function mediaEnded(element, media, autoPlayFiles, ms = 3000) {
+//   setTimeout(() => {
+//     autoPlayFiles(JSON.parse(localStorage.getItem("auto_play")));
+//     element.removeEventListener("ended", mediaEnded);
+//   }, ms);
+// }
+// function fullScreenChange(event) {
+//   let video = event.target;
 
-// // Handle fullscreen button click
-// const fullscreenButton = document.createElement('button');
-// fullscreenButton.textContent = 'Fullscreen';
-// fullscreenButton.addEventListener('click', toggleFullscreen);
-// customControls.appendChild(fullscreenButton);
-
-// function toggleFullscreen() {
-//   if (video.requestFullscreen) {
-//     video.requestFullscreen();
-//   } else if (video.mozRequestFullScreen) {
-//     video.mozRequestFullScreen();
-//   } else if (video.webkitRequestFullscreen) {
-//     video.webkitRequestFullscreen();
-//   } else if (video.msRequestFullscreen) {
-//     video.msRequestFullscreen();
+//   video.disablePictureInPicture = true;
+//   video.disableRemotePlayback = true;
+// }
+// function fullScreen(media) {
+//   try {
+//     if (media.nodeName == "VIDEO") {
+//       if (media.requestFullscreen) {
+//         media.requestFullscreen();
+//       } else if (media.webkitRequestFullscreen) {
+//         media.webkitRequestFullscreen(); //Safari
+//       } else if (media.msRequestFullscreen) {
+//         media.msRequestFullscreen(); //IE11
+//       }
+//     }
+//   } catch (error) {
+//     console.error(error);
 //   }
 // }
