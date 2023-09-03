@@ -13,11 +13,14 @@ function watch() {
     durationTrack = document.querySelector("#duration");
 
   // set video attributes.
-  // video.setAttribute("src", urlParams.get("s"));
-  // video.setAttribute("title", urlParams.get("t"));
-  // video.setAttribute("poster", urlParams.get("p"));
+  video.setAttribute("src", urlParams.get("s"));
+  video.setAttribute("title", urlParams.get("t"));
+  video.setAttribute("poster", urlParams.get("p"));
   video.addEventListener("contextmenu", (e) => {
     e.preventDefault();
+  });
+  video.addEventListener("ended", (e) => {
+    console.log(video.title, " ended");
   });
   // set control buttons events
   /**@description play pause click event */
@@ -38,7 +41,8 @@ function watch() {
       /**@description handle track video time */
       const duration = mediaTrackTime(video.duration),
         currentTime = mediaTrackTime(video.currentTime);
-      track.style.width = `${(
+
+      durationTrack.style.width = `${(
         (Math.floor(currentTime) / Math.floor(duration)) *
         100
       ).toFixed(0)}%`;
@@ -61,7 +65,6 @@ function watch() {
   const settingsIcon = settings.querySelector("img");
   let showModal = true;
   settingsIcon.addEventListener("click", () => {
-    
     settingsDialog.style.display = showModal ? "block" : "none";
     showModal = !showModal;
   });
