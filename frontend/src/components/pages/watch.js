@@ -112,13 +112,29 @@ function watch() {
   fullscreen.addEventListener("click", () => {
     console.log("fullscreen enabled");
   });
-  // vidoe track duration
-  skipTrack.addEventListener("click", (event) => {
+
+  // video track duration
+  /**
+   * Calculate the width percentage of an element based on the mouse position within it.
+   * @param {MouseEvent} event - The mouse event.
+   * @returns {string} The width percentage as a string.
+   */
+  const calculateElementWidthPercentage = (event) => {
     const clickX = event.clientX - skipTrack.getBoundingClientRect().left;
     const skipWidth = skipTrack.offsetWidth;
-    const percentClicked = ((clickX / skipWidth) * 100).toFixed(0);
+    return ((clickX / skipWidth) * 100).toFixed(0);
+  };
+  skipTrack.addEventListener("click", (event) => {
+    const percentClicked = calculateElementWidthPercentage(event);
     durationTrack.style.width = `${percentClicked}%`;
     video.currentTime = (percentClicked / 100) * video.duration;
+  });
+  skipTrack.addEventListener("mousemove", (event) => {
+    const percentClicked = calculateElementWidthPercentage(event);
+    skipTrack.setAttribute(
+      "title",
+      mediaTrackTime((percentClicked / 100) * video.duration)
+    );
   });
 }
 
@@ -144,6 +160,12 @@ function playBackRate(media, change) {
 }
 
 import { formatTime } from "../../utils/time.js";
+/**
+ *
+ * @param {Number} mediaTime
+ * @description wrapper of formatTime
+ * @returns string
+ */
 function mediaTrackTime(mediaTime) {
   return formatTime(Math.floor(mediaTime));
 }
