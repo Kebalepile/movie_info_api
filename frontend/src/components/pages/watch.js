@@ -28,7 +28,7 @@ function watch() {
     e.preventDefault();
   });
   video.addEventListener("ended", () => {
-    console.log(video.title, " ended");
+    stopInterval();
   });
   // set control buttons events
   /**@description play pause click event */
@@ -161,6 +161,38 @@ function watch() {
       mediaTrackTime((percentClicked / 100) * video.duration)
     );
   });
+  // media session api
+  let imageUrl = urlParams.get("p");
+  let imageType = "image/png"; // default type
+
+  if (imageUrl.endsWith(".jpg")) {
+    imageType = "image/jpg";
+  } else if (imageUrl.endsWith(".jpeg")) {
+    imageType = "image/jpeg";
+  }
+
+  navigator.mediaSession.metadata = new MediaMetadata({
+    title: urlParams.get("t"),
+    artwork: [
+      {
+        src: imageUrl,
+        sizes: "256x256",
+        type: imageType,
+      },
+    ],
+    artist: undefined,
+    album: undefined,
+  });
+  navigator.mediaSession.setActionHandler("play", () => playPauseMedia(video));
+  navigator.mediaSession.setActionHandler("pause", () => playPauseMedia(video));
+  navigator.mediaSession.setActionHandler(
+    "seekbackward",
+    () => (video.currentTime -= 10)
+  );
+  navigator.mediaSession.setActionHandler(
+    "seekforward",
+    () => (video.currentTime += 10)
+  );
 }
 
 watch();
