@@ -52,8 +52,9 @@ function watch() {
   };
   document.addEventListener("fullscreenchange", () => {
     if (document.fullscreenElement) {
-      container.style.width = "100dvw";
-      container.style.height = "100dvh";
+      container.style.width = "99.5dvw";
+      container.style.height = "99.5dvh";
+     
     } else {
       container.style.width = defaultStyles["width"] + "px";
       container.style.height = defaultStyles["height"] + "px";
