@@ -44,7 +44,7 @@ function watch() {
     video.currentTime -= 10;
   });
   // document fullscreen change.
-  const container = document.querySelector(".video-container");
+  const container = document.querySelector("#video-container");
 
   const defaultStyles = {
     width: container.clientWidth,

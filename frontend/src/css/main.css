@@ -210,7 +210,7 @@ ul {
 input[type="checkbox"]:checked ~ ul {
   display: block;
 }
-.video-container {
+#video-container {
   width: 600px;
   height: 350px;
   align-self: flex-start;
@@ -224,14 +224,12 @@ input[type="checkbox"]:checked ~ ul {
 }
 
 
-.video-container:-webkit-full-screen{
+#video-container:-webkit-full-screen{
   width:100dvw;
   height:100dvh;
 }
-/* .video-container:hover {
-  border: 1px solid white;
-} */
-.video-container > video {
+
+#video-container > video {
   grid-column: 1/11;
   grid-row: 1/11;
   width: inherit;
