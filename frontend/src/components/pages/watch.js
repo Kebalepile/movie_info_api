@@ -11,9 +11,11 @@ function watch() {
     fullscreen = document.querySelector("#fullscreen"),
     increasevolume = document.querySelector('[name="increase-volume"]'),
     decreasevolume = document.querySelector('[name="decrease-volume"]'),
+    mutevolume = document.querySelector('[name="mute-volume"]'),
     pictureInPicture = document.querySelector('[name="picture-in-picture"]'),
     increaseRate = document.querySelector('[name="increase-rate"]'),
     decreaseRate = document.querySelector('[name="decrease-rate"]'),
+    defaultRate = document.querySelector('[name="default-rate"]'),
     durationTrack = document.querySelector("#duration"),
     skipTrack = document.querySelector("#track");
 
@@ -21,23 +23,24 @@ function watch() {
   video.setAttribute("src", urlParams.get("s"));
   video.setAttribute("title", urlParams.get("t"));
   video.setAttribute("poster", urlParams.get("p"));
+  video.setAttribute("autoplay", true);
   video.addEventListener("contextmenu", (e) => {
     e.preventDefault();
   });
-  video.addEventListener("ended", (e) => {
+  video.addEventListener("ended", () => {
     console.log(video.title, " ended");
   });
   // set control buttons events
   /**@description play pause click event */
-  playPause.addEventListener("click", (e) => {
+  playPause.addEventListener("click", () => {
     video.paused ? video.play() : video.pause();
   });
   /**@description skipforward click event */
-  skipForward.addEventListener("click", (e) => {
+  skipForward.addEventListener("click", () => {
     video.currentTime += 10;
   });
   /**@description backforward click event */
-  skipBackward.addEventListener("click", (e) => {
+  skipBackward.addEventListener("click", () => {
     video.currentTime -= 10;
   });
 
@@ -101,12 +104,18 @@ function watch() {
   decreasevolume.addEventListener("click", () => {
     volume(video, -0.1);
   });
+  mutevolume.addEventListener("click", () => {
+    video.volume = 0;
+  });
   //  playbackRate settings
   increaseRate.addEventListener("click", () => {
     playBackRate(video, 0.1);
   });
   decreaseRate.addEventListener("click", () => {
     playBackRate(video, -0.1);
+  });
+  defaultRate.addEventListener("click", () => {
+    video.playbackRate = 1;
   });
   // fullscreen settings
   fullscreen.addEventListener("click", () => {
