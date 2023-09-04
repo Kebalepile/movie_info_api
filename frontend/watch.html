@@ -9,11 +9,8 @@
     <script defer type="module" src="./src/components/pages/watch.js"></script>
   </head>
   <body>
-    
     <section id="video-container">
-      <video id="media-player" 
-      controlsList="nodownload noplaybackrate">
-      </video>
+      <video id="media-player" controlsList="nodownload noplaybackrate"></video>
       <div id="control-buttons">
         <button id="backward">
           <img
@@ -47,19 +44,63 @@
           src="./src/image/icons/settings.svg"
           alt="settings icon"
         />
-        <article id="settings-controls" >
-          <ol>
-            <li><button name="increase-volume">vol +</button></li>
-           <li> <button name="decrease-volume">vol -</button></li>
-           <li> <button name="mute-volume">mute vol</button></li>
-           <li><button name="picture-in-picture">picture in picture</button></li>
-            <li><button name="increase-rate">x+</button></li>
-            <li><button name="decrease-rate">x-</button></li>
-            <li><button name="default-rate">default rate</button></li>
-          </ol>
-        </article>
+       
       </div>
-
+      <table id="settings-controls">
+        <thead>
+          <tr>
+            <th>Volume</th>
+            <th>Picture in Picture</th>
+            <th>Playback Rate</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <button name="increase-volume">
+                <img
+                  loading="lazy"
+                  class="svg_img"
+                  alt="volume + icon"
+                  src="./src/image/icons/vol-pluse.png"
+                />
+              </button>
+              <button name="decrease-volume">
+                <img
+                  loading="lazy"
+                  class="svg_img"
+                  alt="volume - icon"
+                  src="./src/image/icons/vol-minus.png"
+                />
+              </button>
+              <button name="mute-volume">
+                <img
+                  loading="lazy"
+                  class="svg_img"
+                  alt="volume mute icon"
+                  src="./src/image/icons/mute-vol.png"
+                />
+              </button>
+            </td>
+            <td>
+              <button name="picture-in-picture">
+                <img
+                  loading="lazy"
+                  class="svg_img"
+                  alt="picture-in-picture icon"
+                  src="./src/image/icons/pic-in-pic.png"
+                />
+              </button>
+            </td>
+            <td>
+              <button name="increase-rate">playback rate +</button>
+              <button name="decrease-rate">playback rate -</button>
+              <button name="default-rate">default playbackrate</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      
       <section id="controls">
         <div>
           <div id="time">0:00</div>
@@ -72,7 +113,6 @@
           </div>
         </div>
         <div id="track">
-         
           <div id="duration"></div>
         </div>
       </section>

@@ -245,10 +245,15 @@ input[type="checkbox"]:checked ~ ul {
   z-index: 2;
   grid-column: 1/11;
   grid-row: 5/5;
-  display: flex;
+  display: none;
   justify-content: space-evenly;
   justify-items: center;
   flex-flow: row nowrap;
+}
+
+
+#video-container:hover #control-buttons {
+  display: flex;
 }
 #settings {
   z-index: 2;
@@ -259,26 +264,54 @@ input[type="checkbox"]:checked ~ ul {
   width: 60px;
   padding-right: 15px;
   position:relative;
+  display: none;
+}
+#video-container:hover #settings {
+  display: block;
 }
 #settings-controls{
-  width:70px;
-  height:100px;
+  z-index: 3;
+  grid-column: 5/span 2;
+  grid-row: 3/9;
+  width:300px;
   display:none;
-  padding-right:20px;
+  background:rgba(58, 56, 56, 0.527);
+  border:none;
+  border-radius: 3px;
 }
-#settings-controls > ol{
-  background-color:var(--c4);
+#settings-controls {
+  width: 100%; /* Set the width of the table to 100% of its parent container */
+}
+
+
+#settings-controls td {
+  width: 70px; /* Set the width of each table cell to one third of the table width */
+  height: 50px; /* Set a fixed height for each table cell */
+ 
+}
+#settings-controls th {
+  /*  Set the width of each table cell to one third of the table width */
+  width: 70px;
+  height: 15px;
+  background-color:rgba(0, 0, 0, 0.24);
+  border:none;
+  border-radius: 3px;
+  text-align: center;
+   
+}
+
+#settings-controls  button {
+  height:70px;
   width:70px;
-  list-style: none;
-  border-radius:3px;
+  text-align: center;
+  color:white;
+  background:rgb(34, 33, 33);
+  margin:5px;
+  border-radius: 2px;
+  cursor: pointer;
+  
 }
-#settings-controls > ol > li {
-  margin:3px;
-}
-#settings-controls > ol > li > button {
-  background-color:red;
-  width:70px;
-}
+
 
 #settings> img {
   transition: transform 400ms;
@@ -292,8 +325,11 @@ input[type="checkbox"]:checked ~ ul {
   z-index: 2;
   grid-column: 1/11;
   grid-row: 9/9;
-  display: flex;
+  display: none;
   flex-direction: column;
+}
+#video-container:hover #controls {
+  display: flex;
 }
 
 #controls > *:first-child {
