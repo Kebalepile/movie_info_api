@@ -33,7 +33,7 @@ function watch() {
   // set control buttons events
   /**@description play pause click event */
   playPause.addEventListener("click", () => {
-    video.paused ? video.play() : video.pause();
+    playPauseMedia(video);
   });
   /**@description skipforward click event */
   skipForward.addEventListener("click", () => {
@@ -42,6 +42,22 @@ function watch() {
   /**@description backforward click event */
   skipBackward.addEventListener("click", () => {
     video.currentTime -= 10;
+  });
+  // document fullscreen change.
+  const container = document.querySelector(".video-container");
+
+  const defaultStyles = {
+    width: container.clientWidth,
+    height: container.clientHeight,
+  };
+  document.addEventListener("fullscreenchange", () => {
+    if (document.fullscreenElement) {
+      container.style.width = "100dvw";
+      container.style.height = "100dvh";
+    } else {
+      container.style.width = defaultStyles["width"] + "px";
+      container.style.height = defaultStyles["height"] + "px";
+    }
   });
 
   const handletrackVideoTime = () => {
@@ -119,7 +135,7 @@ function watch() {
   });
   // fullscreen settings
   fullscreen.addEventListener("click", () => {
-    console.log("fullscreen enabled");
+    toggleFullScreen();
   });
 
   // video track duration
@@ -148,7 +164,9 @@ function watch() {
 }
 
 watch();
-
+function playPauseMedia(video) {
+  video.paused ? video.play() : video.pause();
+}
 /**
  *
  * @param {Element} media
@@ -179,30 +197,10 @@ function mediaTrackTime(mediaTime) {
   return formatTime(Math.floor(mediaTime));
 }
 
-// function mediaEnded(element, media, autoPlayFiles, ms = 3000) {
-//   setTimeout(() => {
-//     autoPlayFiles(JSON.parse(localStorage.getItem("auto_play")));
-//     element.removeEventListener("ended", mediaEnded);
-//   }, ms);
-// }
-// function fullScreenChange(event) {
-//   let video = event.target;
-
-//   video.disablePictureInPicture = true;
-//   video.disableRemotePlayback = true;
-// }
-// function fullScreen(media) {
-//   try {
-//     if (media.nodeName == "VIDEO") {
-//       if (media.requestFullscreen) {
-//         media.requestFullscreen();
-//       } else if (media.webkitRequestFullscreen) {
-//         media.webkitRequestFullscreen(); //Safari
-//       } else if (media.msRequestFullscreen) {
-//         media.msRequestFullscreen(); //IE11
-//       }
-//     }
-//   } catch (error) {
-//     console.error(error);
-//   }
-// }
+function toggleFullScreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen();
+  } else if (document.exitFullscreen) {
+    document.exitFullscreen();
+  }
+}
