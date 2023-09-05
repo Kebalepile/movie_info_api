@@ -36,9 +36,9 @@ export function watch(videoParams) {
     skipTrack = document.querySelector("#track"),
     videoDialog = document.querySelector("#watch-video"),
     closeDialog = document.querySelector("#close-dialog");
-  // video
+  
   closeDialog.addEventListener("click", (e) => {
-    // videoDialog.close();
+   
     try {
       container.style.display = "none";
       closeDialog.style.display = "none";
@@ -48,7 +48,7 @@ export function watch(videoParams) {
          video.currentTime = video.duration;
       }
     } catch (err) {
-      // console.log(err);
+      console.log(err);
     } finally {
       videoDialog.style.display ="none";
       videoDialog.style.width = "0";
@@ -56,23 +56,7 @@ export function watch(videoParams) {
     }
   });
 
-  // videoDialog.addEventListener("close", (e) => {
-  //   try {
-  //     container.style.display = "none";
-  //     closeDialog.style.display = "none";
-  //     if (Number.isNaN(video.duration)) {
-  //       video.pause();
-  //     }else{
-  //        video.currentTime = video.duration;
-  //     }
-  //   } catch (err) {
-  //     // console.log(err);
-  //   } finally {
-  //     videoDialog.style.display ="none";
-  //     videoDialog.style.width = "0";
-  //     videoDialog.style.height = "0";
-  //   }
-  // });
+  
   // set video attributes.
   video.setAttribute("src", videoParams.get("s"));
   video.setAttribute("title", videoParams.get("t"));
