@@ -17,11 +17,8 @@ import {
 /**
  * @description Set up video player and its respective features.
  */
-function watch() {
-  //  Get URL params
-  const urlParams = new URLSearchParams(location.search);
-
-  const settings = document.querySelector("#settings"),
+export function watch(videoParams) {
+  const wrapper = document.querySelector("#wrapper"),
     video = document.querySelector("#media-player"),
     skipBackward = document.querySelector("#backward"),
     skipForward = document.querySelector("#forward"),
@@ -36,12 +33,50 @@ function watch() {
     decreaseRate = document.querySelector('[name="decrease-rate"]'),
     defaultRate = document.querySelector('[name="default-rate"]'),
     durationTrack = document.querySelector("#duration"),
-    skipTrack = document.querySelector("#track");
+    skipTrack = document.querySelector("#track"),
+    videoDialog = document.querySelector("#watch-video"),
+    closeDialog = document.querySelector("#close-dialog");
+  // video
+  closeDialog.addEventListener("click", (e) => {
+    // videoDialog.close();
+    try {
+      container.style.display = "none";
+      closeDialog.style.display = "none";
+      if (Number.isNaN(video.duration)) {
+        video.pause();
+      }else{
+         video.currentTime = video.duration;
+      }
+    } catch (err) {
+      // console.log(err);
+    } finally {
+      videoDialog.style.display ="none";
+      videoDialog.style.width = "0";
+      videoDialog.style.height = "0";
+    }
+  });
 
+  // videoDialog.addEventListener("close", (e) => {
+  //   try {
+  //     container.style.display = "none";
+  //     closeDialog.style.display = "none";
+  //     if (Number.isNaN(video.duration)) {
+  //       video.pause();
+  //     }else{
+  //        video.currentTime = video.duration;
+  //     }
+  //   } catch (err) {
+  //     // console.log(err);
+  //   } finally {
+  //     videoDialog.style.display ="none";
+  //     videoDialog.style.width = "0";
+  //     videoDialog.style.height = "0";
+  //   }
+  // });
   // set video attributes.
-  video.setAttribute("src", urlParams.get("s"));
-  video.setAttribute("title", urlParams.get("t"));
-  video.setAttribute("poster", urlParams.get("p"));
+  video.setAttribute("src", videoParams.get("s"));
+  video.setAttribute("title", videoParams.get("t"));
+  video.setAttribute("poster", videoParams.get("p"));
   video.setAttribute("autoplay", true);
   video.addEventListener("contextmenu", contextmenu);
   video.addEventListener("ended", () => {
@@ -111,9 +146,8 @@ function watch() {
   });
   // fullscreen settings
   fullscreen.addEventListener("click", () => {
-    toggleFullScreen();
+    toggleFullScreen(wrapper);
   });
-
   // video track duration
 
   /**
@@ -138,7 +172,5 @@ function watch() {
       mediaTrackTime((percentClicked / 100) * video.duration)
     );
   });
-  mediaSession(video, urlParams.get("t"), urlParams.get("p"));
+  mediaSession(video, videoParams.get("t"), videoParams.get("p"));
 }
-
-watch();

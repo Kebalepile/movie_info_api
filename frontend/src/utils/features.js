@@ -56,13 +56,18 @@ export function mediaTrackTime(mediaTime) {
 /**
  * @description toggle video between small and fullscreen
  */
-export function toggleFullScreen() {
-  if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen();
-  } else if (document.exitFullscreen) {
-    document.exitFullscreen();
+export function toggleFullScreen(container) {
+  try {
+    if (document.fullscreenElement !== container) {
+      container.requestFullscreen();
+    } else if (document.exitFullscreen) {
+      document.exitFullscreen();
+    }
+  } catch (err) {
+    console.log(err.message);
   }
 }
+
 
 /**
  *

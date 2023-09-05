@@ -1,6 +1,7 @@
 import { initElementComponent } from "../../utils/nana.js";
 import { Trending, Recommended } from "../cimaTube/api.js";
 import { apiUrl, options } from "../cimaTube/url.js";
+import { watch } from "./watch.js";
 async function Home() {
   /***
    * @description add banner in home page
@@ -76,49 +77,67 @@ async function Home() {
 function createPoster(parent, data) {
   data
     .reduce((acc, cur) => {
-      let found = acc.find((val) => val.src == cur.src);
+      let found = acc.find((val) => val?.src == cur?.src);
       if (!found) {
         acc.push(cur);
       }
       return acc;
     }, [])
     .forEach((d) => {
-      const poster = document.createElement("figure");
-      poster.classList.add("poster");
+      try {
+        const poster = document.createElement("figure");
+        poster.classList.add("poster");
 
-      const posterShadow = document.createElement("div");
-      posterShadow.classList.add("poster_shadow");
+        const posterShadow = document.createElement("div");
+        posterShadow.classList.add("poster_shadow");
 
-      const playButton = document.createElement("span");
-      playButton.classList.add("play_button");
-      playButton.textContent = "▶";
-      posterShadow.appendChild(playButton);
+        const playButton = document.createElement("span");
+        playButton.classList.add("play_button");
+        playButton.textContent = "▶";
+        posterShadow.appendChild(playButton);
 
-      const img = document.createElement("img");
-      img.src = d.poster;
-      img.alt = "Movie poster";
-      img.setAttribute("loading", "lazy");
+        const img = document.createElement("img");
+        img.src = d.poster || "#";
+        img.alt = "Movie poster";
+        img.setAttribute("loading", "lazy");
 
-      const caption = document.createElement("figcaption");
-      caption.textContent = d.title;
+        const caption = document.createElement("figcaption");
+        caption.textContent = d?.title;
 
-      poster.appendChild(posterShadow);
-      poster.appendChild(img);
-      poster.appendChild(caption);
-      poster.setAttribute("title", d.title);
-      poster.addEventListener("click", () => {
-        const params = new URLSearchParams();
-        params.set("p", d.poster);
-        params.set("t", d.title);
-        params.set("s", d.src);
-        const urlWithParams = "/frontend/watch.html?" + params.toString();
-        location.replace(urlWithParams);
-      });
-      poster.addEventListener("contextmenu", (e) => {
-        e.preventDefault();
-      });
-      parent.appendChild(poster);
+        poster.appendChild(posterShadow);
+        poster.appendChild(img);
+        poster.appendChild(caption);
+        poster.setAttribute("title", d?.title);
+        poster.addEventListener("click", () => {
+          const videoParams = new Map();
+          videoParams.set("p", d?.poster || "#");
+          videoParams.set("t", d?.title || "No video found");
+          videoParams.set("s", d?.src || "#");
+          watch(videoParams);
+          toggleVideoDialog();
+        });
+        poster.addEventListener("contextmenu", (e) => {
+          e.preventDefault();
+        });
+        parent.appendChild(poster);
+      } catch (err) {
+        console.log(err.message);
+      }
     });
 }
 
 Home();
+function toggleVideoDialog() {
+  try {
+    const container = document.querySelector("#video-container");
+    const closeDialog = document.querySelector("#close-dialog");
+    const videoDialog = document.querySelector("#watch-video");
+    videoDialog.style.display ="flex";
+    videoDialog.style.width = "100dvw";
+    videoDialog.style.height = "100dvh";
+    container.style.display = "grid";
+    closeDialog.style.display = "inline-block";
+  } catch (err) {
+    console.log(err.message);
+  }
+}
