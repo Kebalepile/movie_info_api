@@ -68,7 +68,6 @@ export function toggleFullScreen(container) {
   }
 }
 
-
 /**
  *
  * @param {Element} video
@@ -156,15 +155,13 @@ export function skipVideoBackward(video) {
 }
 
 /**
- * 
- * @param {Element} video 
- * @param {String} title 
- * @param {String} imageUrl 
+ *
+ * @param {Element} video
+ * @param {String} title
+ * @param {String} imageUrl
  * @description Use Broswer  media session api
  */
 export function mediaSession(video, title, imageUrl) {
-
-  
   let imageType = "image/png"; // default type
 
   if (imageUrl.endsWith(".jpg")) {
@@ -198,10 +195,10 @@ export function mediaSession(video, title, imageUrl) {
 }
 export function toggleVideoDialog() {
   try {
-    const container = document.querySelector("#video-container");
-    const closeDialog = document.querySelector("#close-dialog");
-    const videoDialog = document.querySelector("#watch-video");
-    videoDialog.style.display ="flex";
+    const container = document.querySelector("#video-container"),
+      closeDialog = document.querySelector("#close-dialog"),
+      videoDialog = document.querySelector("#watch-video");
+    videoDialog.style.display = "flex";
     videoDialog.style.width = "100dvw";
     videoDialog.style.height = "100dvh";
     container.style.display = "grid";
