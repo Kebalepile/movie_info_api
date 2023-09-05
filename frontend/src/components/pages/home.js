@@ -2,6 +2,7 @@ import { initElementComponent } from "../../utils/nana.js";
 import { Trending, Recommended } from "../cimaTube/api.js";
 import { apiUrl, options } from "../cimaTube/url.js";
 import { watch } from "./watch.js";
+import { toggleVideoDialog } from "../../utils/features.js";
 async function Home() {
   /***
    * @description add banner in home page
@@ -127,17 +128,4 @@ function createPoster(parent, data) {
 }
 
 Home();
-function toggleVideoDialog() {
-  try {
-    const container = document.querySelector("#video-container");
-    const closeDialog = document.querySelector("#close-dialog");
-    const videoDialog = document.querySelector("#watch-video");
-    videoDialog.style.display ="flex";
-    videoDialog.style.width = "100dvw";
-    videoDialog.style.height = "100dvh";
-    container.style.display = "grid";
-    closeDialog.style.display = "inline-block";
-  } catch (err) {
-    console.log(err.message);
-  }
-}
+
