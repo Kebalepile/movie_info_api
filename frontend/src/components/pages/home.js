@@ -2,14 +2,22 @@ import { Trending, Recommended } from "../cimaTube/api.js";
 import { apiUrl, options } from "../cimaTube/url.js";
 import { watch } from "./watch.js";
 import { toggleVideoDialog } from "../../utils/features.js";
+/**
+ * @description The `Home` function is an asynchronous function that updates the home page of a website with trending and recommended content.
+ *  The function first selects the `home-page` element and then calls the `Trending` function to get an array of currently streaming content.
+ *  If there is any streaming content, the function creates a new slide for the trending content, adds a heading, and calls the `createPoster`
+ *  function to create posters for each item in the `streamingNow` array. The function then appends the new slide to the home page.
+ *  Next, the function calls the `Recommended` function to get an array of recommended content. If there is any recommended content, the function
+ *  creates a new slide for the recommended content, adds a heading, and calls the `createPoster` function to create posters for each item in the `recommended` array. The function then appends the new slide to the home page.
+ *  If an error occurs during execution, it is caught and logged to the console.
+ */
 async function Home() {
-  
   try {
     const homePage = document.querySelector("#home-page");
     const streamingNow = await Trending(apiUrl, options);
     if (streamingNow.length) {
       const trendingSlide = document.querySelector("#trending");
-      
+
       const h1 = document.createElement("h1");
       h1.textContent = "Streaming Now";
       const br = document.createElement("br");
@@ -27,8 +35,8 @@ async function Home() {
     }
     const recommended = await Recommended(apiUrl, options);
     if (recommended.length) {
-      const recommendedSlide = document.querySelector("#recommended")
-      
+      const recommendedSlide = document.querySelector("#recommended");
+
       const h1 = document.createElement("h1");
       h1.textContent = "Recommended";
       const br = document.createElement("br");
@@ -47,6 +55,11 @@ async function Home() {
   }
 }
 
+/**
+ * @description This function creates a poster element for each item in the data array and appends it to the parent element.
+ * @param {HTMLElement} parent - The parent element to which the posters will be appended.
+ * @param {Object[]} data - An array of objects representing the data for each poster.
+ */
 function createPoster(parent, data) {
   data
     .reduce((acc, cur) => {
@@ -58,15 +71,15 @@ function createPoster(parent, data) {
     }, [])
     .forEach((d) => {
       try {
-        const observer = new IntersectionObserver(entries => {
-          entries.forEach(entry => {
-            if(entry.isIntersecting){
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
               const img = entry.target;
               img.src = d.poster;
               observer.unobserve(img);
             }
-          })
-        })
+          });
+        });
         const poster = document.createElement("figure");
         poster.classList.add("poster");
 
@@ -82,7 +95,7 @@ function createPoster(parent, data) {
         img.src = d.poster || "#";
         img.alt = "Movie poster";
         img.setAttribute("loading", "lazy");
-        observer.observe(img)
+        observer.observe(img);
         const caption = document.createElement("figcaption");
         caption.textContent = d?.title;
 
@@ -109,4 +122,3 @@ function createPoster(parent, data) {
 }
 
 Home();
-
