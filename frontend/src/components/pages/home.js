@@ -28,8 +28,7 @@ async function Home() {
     const recommended = await Recommended(apiUrl, options);
     if (recommended.length) {
       const recommendedSlide = document.querySelector("#recommended")
-      // recommendedSlide.classList.add("movies_slide");
-      // recommendedSlide.setAttribute("id", "recommended");
+      
       const h1 = document.createElement("h1");
       h1.textContent = "Recommended";
       const br = document.createElement("br");
@@ -59,6 +58,15 @@ function createPoster(parent, data) {
     }, [])
     .forEach((d) => {
       try {
+        const observer = new IntersectionObserver(entries => {
+          entries.forEach(entry => {
+            if(entry.isIntersecting){
+              const img = entry.target;
+              img.src = d.poster;
+              observer.unobserve(img);
+            }
+          })
+        })
         const poster = document.createElement("figure");
         poster.classList.add("poster");
 
@@ -74,7 +82,7 @@ function createPoster(parent, data) {
         img.src = d.poster || "#";
         img.alt = "Movie poster";
         img.setAttribute("loading", "lazy");
-
+        observer.observe(img)
         const caption = document.createElement("figcaption");
         caption.textContent = d?.title;
 
