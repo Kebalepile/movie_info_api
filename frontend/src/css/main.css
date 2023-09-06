@@ -1,4 +1,3 @@
-
 :root {
   --main: #252525;
   --c2: #1c242c;
@@ -25,37 +24,8 @@ body {
   width: 100dvw;
   overflow-x: hidden;
 }
-#navigation {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 60px;
-  border-bottom: 5px;
 
-  background: var(--c3);
-  width: 100dvw;
-  display: flex;
-  justify-content: flex-start;
-  z-index: 6;
-}
-#navigation a {
-  color: inherit;
-  text-decoration: none;
-  padding: 5px;
-}
-#navigation a:hover {
-  background: var(--main);
-  width: inherit;
-  height: inherit;
-  border-radius: 2px;
-}
-#navigation li {
-  list-style: none;
-  margin: 10px;
-  text-align: center;
-}
-
+/* banner styles */
 #welcome_banner {
   position: absolute;
   top: 100px;
@@ -70,40 +40,6 @@ body {
   color: rgb(255, 255, 255);
   text-align: center;
   border-radius: 5px;
-}
-.banner_msg {
-  position: absolute;
-}
-#watch-video{
-  z-index:7;
-  position:fixed;
-  top:50%;
-  left:50%;
-  transform: translate(-50%,-50%);
-  margin:center;
-  border:none;
-  display:none;
-  flex-flow: column nowrap;
-  justify-content: center;
-  align-items: center;
-  background-color: #252525c2;
-  backdrop-filter: blur(5px);
-  
-  width:100dvw;
-  height:100dvh;
-}
-#watch-video * {
-  color:whitesmoke;
-}
-#close-dialog{
-  background-color: rgba(46, 46, 46, 0.589);
-  border-radius: 50%;
-  border: rgb(12, 1, 1) 1px solid;
-  height:60px;
-  width:60px;
-  margin:1% auto 1% auto;
-  display:none;
-  text-align: center;
 }
 
 .banner_msg {
@@ -126,23 +62,39 @@ body {
 #welcome_banner:hover {
   filter: brightness(100%);
 }
-
+/* poster styles */
 .posters {
   margin: 10px;
   display: flex;
-  flex-wrap: nowrap;
-  justify-content: flex-start;
-  overflow-x: scroll;
+  flex-flow: row wrap;
+  justify-content: center; 
   border-radius: 2px;
-  height: 300px;
 }
+.movies_slide h1 {
+  color: rgb(108, 231, 6);
+  background-color: rgb(34, 34, 41);
+  border-radius: 5px;
+  border: 1px solid lime;
+  width:340px;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  margin: auto;
+  animation: jitter 0.5s infinite;
+}
+
+
+/* mobile styles  */
+
 .poster {
   height: 250px;
   width: 200px;
   border-radius: 3px;
-  margin: 5px;
-  position: relative;
+  margin: 5px 5px 40px 5px;
+  /* position: relative; */
 }
+/* mobile styles */
+
 
 .poster_shadow {
   z-index: 3;
@@ -192,7 +144,6 @@ body {
   margin-top: 300px;
 }
 
-
 /* Scrollbar Styles */
 ::-webkit-scrollbar {
   height: 4px;
@@ -208,6 +159,36 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background-color: var(--c7);
+}
+/* navigation menu */
+#navigation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  border-bottom: 5px;
+  background: var(--c3);
+  width: 100dvw;
+  display: flex;
+  justify-content: flex-start;
+  z-index: 6;
+}
+#navigation a {
+  color: inherit;
+  text-decoration: none;
+  padding: 5px;
+}
+#navigation a:hover {
+  background: var(--main);
+  width: inherit;
+  height: inherit;
+  border-radius: 2px;
+}
+#navigation li {
+  list-style: none;
+  margin: 10px;
+  text-align: center;
 }
 .menu {
   position: relative;
@@ -242,9 +223,10 @@ ul {
 input[type="checkbox"]:checked ~ ul {
   display: block;
 }
-#wrapper{
-  width:90dvw;
-  height:80dvh;
+/* video player styles */
+#wrapper {
+  width: 90dvw;
+  height: 80dvh;
 }
 #video-container {
   width: inherit;
@@ -256,29 +238,21 @@ input[type="checkbox"]:checked ~ ul {
   gap: 4px;
   margin: 0 auto auto auto;
   border-radius: 3px;
-  background-color:black;
+  background-color: black;
 }
-
-
-/* #video-container:-webkit-full-screen{
-  width:100dvw;
-  height:100dvh;
-} */
 
 #video-container > video {
   grid-column: 1/11;
   grid-row: 1/11;
   width: inherit;
   height: inherit;
- 
 }
 
 .video_container > video::poster {
   object-fit: fill;
-    width:inherit;
-    height:inherit;
-
-  }
+  width: inherit;
+  height: inherit;
+}
 #control-buttons {
   z-index: 8;
   grid-column: 1/11;
@@ -288,7 +262,6 @@ input[type="checkbox"]:checked ~ ul {
   justify-items: center;
   flex-flow: row nowrap;
 }
-
 
 #video-container:hover #control-buttons {
   display: flex;
@@ -301,62 +274,56 @@ input[type="checkbox"]:checked ~ ul {
   height: 60px;
   width: 60px;
   padding-right: 15px;
-  position:relative;
+  position: relative;
   display: none;
 }
 #video-container:hover #settings {
   display: block;
 }
-#settings-controls{
+#settings-controls {
   z-index: 9;
-  grid-column: 5/span 2;
+  grid-column: 5 / span 2;
   grid-row: 3/9;
-  width:300px;
-  display:none;
-  background:rgba(58, 56, 56, 0.527);
-  border:none;
+  width: 300px;
+  display: none;
+  background: rgba(58, 56, 56, 0.527);
+  border: none;
   border-radius: 3px;
 }
 #settings-controls {
   width: 100%; /* Set the width of the table to 100% of its parent container */
 }
 
-
 #settings-controls td {
   width: 70px; /* Set the width of each table cell to one third of the table width */
   height: 50px; /* Set a fixed height for each table cell */
- 
 }
 #settings-controls th {
   /*  Set the width of each table cell to one third of the table width */
   width: 70px;
   height: 15px;
-  background-color:rgba(0, 0, 0, 0.24);
-  border:none;
+  background-color: rgba(0, 0, 0, 0.24);
+  border: none;
   border-radius: 3px;
   text-align: center;
-   
 }
 
-#settings-controls  button {
-  height:70px;
-  width:70px;
+#settings-controls button {
+  height: 70px;
+  width: 70px;
   text-align: center;
-  color:white;
-  background:rgb(34, 33, 33);
-  margin:5px;
+  color: white;
+  background: rgb(34, 33, 33);
+  margin: 5px;
   border-radius: 2px;
   cursor: pointer;
-  
 }
 
-
-#settings> img {
+#settings > img {
   transition: transform 400ms;
 }
-#settings> img:hover{
-  
-  transform:rotate(90deg);
+#settings > img:hover {
+  transform: rotate(90deg);
 }
 
 #controls {
@@ -433,4 +400,76 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+#close-dialog {
+  background-color: rgba(46, 46, 46, 0.589);
+  border-radius: 50%;
+  border: rgb(12, 1, 1) 1px solid;
+  height: 60px;
+  width: 60px;
+  margin: 1% auto 1% auto;
+  display: none;
+  text-align: center;
+}
+#watch-video {
+  z-index: 7;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: center;
+  border: none;
+  display: none;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  background-color: #252525c2;
+  backdrop-filter: blur(5px);
+
+  width: 100dvw;
+  height: 100dvh;
+}
+#watch-video * {
+  color: whitesmoke;
+}
+@media screen and (max-width: 440px) {
+  .movies_slide h1 {
+
+    width:300px;
+  
+  }
+  .posters {
+    margin: 10px;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: scroll;
+    border-radius: 2px;
+    height: 300px;
+  }
+  .poster {
+    height: 250px;
+    width: 200px;
+    border-radius: 3px;
+    margin: 5px;
+    position: relative;
+  }
+}
+/* animations */
+@keyframes jitter {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(0.1deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+  75% {
+    transform: rotate(-0.1deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
 }
