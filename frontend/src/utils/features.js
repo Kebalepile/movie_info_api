@@ -130,13 +130,13 @@ export function videoSettings() {
  * @param {Object} defaultStyles
  * @description detect document fullscreen change and toggle video container to full screen
  */
-export function screenChange(container, defaultStyles) {
+export function screenChange(container) {
   if (document.fullscreenElement) {
     container.style.width = "99.5dvw";
     container.style.height = "99.5dvh";
   } else {
-    container.style.width = defaultStyles["width"] + "px";
-    container.style.height = defaultStyles["height"] + "px";
+    container.style.width = "inherit";
+    container.style.height = "inherit";
   }
 }
 /**

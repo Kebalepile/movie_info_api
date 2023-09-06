@@ -14,6 +14,7 @@ import {
   skipVideoBackward,
   skipVideoForward,
 } from "../../utils/features.js";
+
 /**
  * @description Set up video player and its respective features.
  */
@@ -36,27 +37,25 @@ export function watch(videoParams) {
     skipTrack = document.querySelector("#track"),
     videoDialog = document.querySelector("#watch-video"),
     closeDialog = document.querySelector("#close-dialog");
-  
+
   closeDialog.addEventListener("click", (e) => {
-   
     try {
       container.style.display = "none";
       closeDialog.style.display = "none";
       if (Number.isNaN(video.duration)) {
         video.pause();
-      }else{
-         video.currentTime = video.duration;
+      } else {
+        video.currentTime = video.duration;
       }
     } catch (err) {
       console.log(err);
     } finally {
-      videoDialog.style.display ="none";
+      videoDialog.style.display = "none";
       videoDialog.style.width = "0";
       videoDialog.style.height = "0";
     }
   });
 
-  
   // set video attributes.
   video.setAttribute("src", videoParams.get("s"));
   video.setAttribute("title", videoParams.get("t"));
@@ -82,12 +81,8 @@ export function watch(videoParams) {
   // document fullscreen change.
   const container = document.querySelector("#video-container");
 
-  const defaultStyles = {
-    width: container.clientWidth,
-    height: container.clientHeight,
-  };
   document.addEventListener("fullscreenchange", () => {
-    screenChange(container, defaultStyles);
+    screenChange(container);
   });
 
   const handletrackVideoTime = () => {
