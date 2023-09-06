@@ -470,6 +470,8 @@ footer div {
 
 footer a {
   color: white;
+  text-align: center;
+  width:70px;
 }
 @import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
 
