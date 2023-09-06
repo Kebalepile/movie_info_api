@@ -1,42 +1,15 @@
-import { initElementComponent } from "../../utils/nana.js";
 import { Trending, Recommended } from "../cimaTube/api.js";
 import { apiUrl, options } from "../cimaTube/url.js";
 import { watch } from "./watch.js";
 import { toggleVideoDialog } from "../../utils/features.js";
 async function Home() {
-  /***
-   * @description add banner in home page
-   */
-  document.body.appendChild(
-    initElementComponent({
-      type: "section",
-      id: "home-page",
-
-      children: [
-        {
-          type: "article",
-          id: "welcome_banner",
-          children: [
-            {
-              type: "h1",
-              classes: "banner_msg",
-              content: "Stream Movies, Series & TV Shows ",
-            },
-          ],
-        },
-        {
-          type: "br",
-        },
-      ],
-    })
-  );
+  
   try {
     const homePage = document.querySelector("#home-page");
     const streamingNow = await Trending(apiUrl, options);
     if (streamingNow.length) {
-      const trendingSlide = document.createElement("section");
-      trendingSlide.classList.add("movies_slide");
-      trendingSlide.setAttribute("id", "trending");
+      const trendingSlide = document.querySelector("#trending");
+      
       const h1 = document.createElement("h1");
       h1.textContent = "Streaming Now";
       const br = document.createElement("br");
@@ -54,9 +27,9 @@ async function Home() {
     }
     const recommended = await Recommended(apiUrl, options);
     if (recommended.length) {
-      const recommendedSlide = document.createElement("section");
-      recommendedSlide.classList.add("movies_slide");
-      recommendedSlide.setAttribute("id", "recommended");
+      const recommendedSlide = document.querySelector("#recommended")
+      // recommendedSlide.classList.add("movies_slide");
+      // recommendedSlide.setAttribute("id", "recommended");
       const h1 = document.createElement("h1");
       h1.textContent = "Recommended";
       const br = document.createElement("br");

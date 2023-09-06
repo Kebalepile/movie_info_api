@@ -43,7 +43,7 @@ export default () => {
                     : {
                         type: "a",
                         content: "About",
-                        attributes: { href: "./about.html" },
+                        attributes: { href: "#about" },
                       },
                 ],
               })),
