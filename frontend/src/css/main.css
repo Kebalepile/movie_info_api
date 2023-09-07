@@ -69,6 +69,25 @@ body {
   flex-flow: row wrap;
   justify-content: center;
   border-radius: 2px;
+
+}
+.temp-posters {
+  margin: 10px;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  border-radius: 2px;
+}
+.temp-poster {
+  height: 250px;
+  width: 200px;
+  border-radius: 3px;
+  margin: 3px;
+  cursor: pointer;
+
+  animation: wave 3s linear infinite;
+  background: linear-gradient(90deg, #241c1c, #1c242c, #252525, #161c23);
+  background-size: 400% 400%;
 }
 .movies_slide h1 {
   color: rgb(108, 231, 6);
@@ -83,8 +102,6 @@ body {
   animation: jitter 0.5s infinite;
 }
 
-/* mobile styles  */
-
 .poster {
   height: 250px;
   width: 200px;
@@ -92,7 +109,6 @@ body {
   margin: 5px 5px 40px 5px;
   cursor: pointer;
 }
-/* mobile styles */
 
 .poster_shadow {
   z-index: 3;
@@ -452,8 +468,7 @@ footer div {
   flex-flow: column;
   text-align: justify;
   border-right: 1px solid rgb(44, 44, 44);
-  padding-right:15px;
-  
+  padding-right: 15px;
 }
 #about > p {
   color: rgb(219, 217, 217);
@@ -471,7 +486,7 @@ footer div {
 footer a {
   color: white;
   text-align: center;
-  width:70px;
+  width: 70px;
 }
 @import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
 
@@ -490,6 +505,17 @@ footer {
   .movies_slide h1 {
     width: 300px;
   }
+  .temp-posters {
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    overflow-x: scroll;
+    min-height: 300px;
+  }
+  .temp-poster {
+    min-height: 250px;
+    min-width: 200px;
+  }
+
   .posters {
     margin: 10px;
     display: flex;
@@ -523,5 +549,17 @@ footer {
   }
   100% {
     transform: rotate(0deg);
+  }
+}
+
+@keyframes wave {
+  0% {
+    background-position: 100% 50%;
+  }
+  50% {
+    background-position: 50% 50%;
+  }
+  100% {
+    background-position: 0 50%;
   }
 }

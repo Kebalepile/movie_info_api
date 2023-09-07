@@ -4,7 +4,7 @@ import { watch } from "./watch.js";
 import { toggleVideoDialog } from "../../utils/features.js";
 /**
  * @description The `Home` function is an asynchronous function that updates the home page of a website with trending and recommended content.
- *  The function first selects the `home-page` element and then calls the `Trending` function to get an array of currently streaming content.
+ *  The function first selects the `trending` & `recommended` element and then calls the `Trending` function to get an array of currently streaming content.
  *  If there is any streaming content, the function creates a new slide for the trending content, adds a heading, and calls the `createPoster`
  *  function to create posters for each item in the `streamingNow` array. The function then appends the new slide to the home page.
  *  Next, the function calls the `Recommended` function to get an array of recommended content. If there is any recommended content, the function
@@ -13,42 +13,32 @@ import { toggleVideoDialog } from "../../utils/features.js";
  */
 async function Home() {
   try {
-    const homePage = document.querySelector("#home-page");
-    const streamingNow = await Trending(apiUrl, options);
-    if (streamingNow.length) {
-      const trendingSlide = document.querySelector("#trending");
+    const tempTrendingPosters = document.querySelector(".trending"),
+      tempRecommendedPosters = document.querySelector(".recommended");
 
-      const h1 = document.createElement("h1");
-      h1.textContent = "Streaming Now";
-      const br = document.createElement("br");
+    const streamingNow = await Trending(apiUrl, options);
+
+    if (streamingNow.length) {
+      tempTrendingPosters.style.display = "none";
+      const trendingSlide = document.querySelector("#trending");
 
       const postersElem = document.createElement("div");
       postersElem.classList.add("posters");
 
       createPoster(postersElem, streamingNow);
-      trendingSlide.appendChild(br);
-      trendingSlide.appendChild(h1);
-      trendingSlide.appendChild(br);
-      trendingSlide.appendChild(postersElem);
 
-      homePage.appendChild(trendingSlide);
+      trendingSlide.appendChild(postersElem);
     }
     const recommended = await Recommended(apiUrl, options);
     if (recommended.length) {
+      tempRecommendedPosters.style.display = "none";
       const recommendedSlide = document.querySelector("#recommended");
-
-      const h1 = document.createElement("h1");
-      h1.textContent = "Recommended";
-      const br = document.createElement("br");
 
       const postersElem = document.createElement("div");
       postersElem.classList.add("posters");
       createPoster(postersElem, recommended);
-      recommendedSlide.appendChild(br);
-      recommendedSlide.appendChild(h1);
-      recommendedSlide.appendChild(br);
+
       recommendedSlide.appendChild(postersElem);
-      homePage.appendChild(recommendedSlide);
     }
   } catch (err) {
     console.log(err);
@@ -123,21 +113,20 @@ function createPoster(parent, data) {
 
 Home();
 
-(function () {
-  let intervalId = setInterval(function a() {
-      try {
-          (function b(i) {
-              if (('' + (i / i)).length !== 1 || i % 20 === 0) {
-                  (function () { }).constructor('debugger')()
-              } else {
-                  debugger
-              }
-              b(++i)
-          })(0)
-      } catch (e) {
-          clearInterval(intervalId);
-          intervalId = setInterval(a);
-      }
-  });
-})();
-
+// (function () {
+//   let intervalId = setInterval(function a() {
+//       try {
+//           (function b(i) {
+//               if (('' + (i / i)).length !== 1 || i % 20 === 0) {
+//                   (function () { }).constructor('debugger')()
+//               } else {
+//                   debugger
+//               }
+//               b(++i)
+//           })(0)
+//       } catch (e) {
+//           clearInterval(intervalId);
+//           intervalId = setInterval(a);
+//       }
+//   });
+// })();
