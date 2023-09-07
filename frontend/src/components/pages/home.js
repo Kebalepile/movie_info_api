@@ -13,12 +13,16 @@ import { toggleVideoDialog } from "../../utils/features.js";
  */
 async function Home() {
   try {
+    const installBtn = document.querySelector("#install");
+    installBtn.addEventListener("click", () => {
+      console.log("install web app");
+    });
     const tempTrendingPosters = document.querySelector(".trending"),
       tempRecommendedPosters = document.querySelector(".recommended");
 
     const streamingNow = await Trending(apiUrl, options);
 
-    if (streamingNow.length) {
+    if (streamingNow?.length) {
       tempTrendingPosters.style.display = "none";
       const trendingSlide = document.querySelector("#trending");
 
@@ -30,7 +34,7 @@ async function Home() {
       trendingSlide.appendChild(postersElem);
     }
     const recommended = await Recommended(apiUrl, options);
-    if (recommended.length) {
+    if (recommended?.length) {
       tempRecommendedPosters.style.display = "none";
       const recommendedSlide = document.querySelector("#recommended");
 

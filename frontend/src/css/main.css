@@ -61,6 +61,23 @@ body {
 #welcome_banner:hover {
   filter: brightness(100%);
 }
+#install div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-right: 5px;
+}
+#install div:hover {
+  background: var(--main);
+  width: inherit;
+  height: inherit;
+  border-radius: 2px;
+}
+#install img {
+  width: 25px;
+  height: 25px;
+  filter: invert(100%);
+}
 
 /* poster styles */
 .posters {
@@ -69,7 +86,6 @@ body {
   flex-flow: row wrap;
   justify-content: center;
   border-radius: 2px;
-
 }
 .temp-posters {
   margin: 10px;
