@@ -4,9 +4,6 @@ const cacheName = "Rusty🎬 Biskop",
     "/index.html",
     "/src/css/main.css",
     "/src/main.js",
-    // "/src/image/icons/*.png",
-    // "/src/image/icons/*.svg",
-    // "/src/image/icons/*.gif",
     "/src/components/navigation/nav.js",
     "/src/components/pages/home.js",
     "/src/components/pages/watch.js",
@@ -14,7 +11,7 @@ const cacheName = "Rusty🎬 Biskop",
   ];
 
 self.addEventListener("install", (e) => {
-  console.log("service worker being installed");
+//   console.log("service worker being installed");
   // perform install steps
   e.waitUntil(
     caches.open(cacheName).then((cache) => {
@@ -24,7 +21,7 @@ self.addEventListener("install", (e) => {
   );
 
   self.skipWaiting();
-  console.log("service worker installed");
+//   console.log("service worker installed");
 });
 
 self.addEventListener("activate", (e) => {
@@ -38,11 +35,11 @@ self.addEventListener("activate", (e) => {
     );
   });
 
-  console.log("service worker activated")
+//   console.log("service worker activated")
 });
 
 self.addEventListener("fetch", (e) => {
-  console.log("service worker is serving the asset.");
+//   console.log("service worker is serving the asset.");
   e.respondWith(
     caches.match(e.request).then((res) => {
       if (res) {
