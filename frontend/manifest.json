@@ -1,0 +1,32 @@
+{
+  "short_name": "Rusty🎬 Biskop",
+  "name": "Rusty🎬 Biskop",
+  "description": " 🎬 Get ready to immerse yourself in a world of entertainment with our streaming service! With an extensive library of movies 🍿 and TV series 📺, you’ll never run out of things to watch. From the latest blockbusters 🎥 to timeless classics 🎞️, we’ve got something for everyone. So sit back, relax, and let us bring the magic of the big screen to your living room. Start streaming now and discover your next favorite show! 🤩",
+  "author": "K.T Motshoana",
+  "lang": "en-US",
+  "start_url": ".",
+  "background_color": "#1c242c",
+  "theme_color": "#00ff00",
+  "scope": "/",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "./src/image/webapp/icons/144.png",
+      "type": "image/png",
+      "sizes": "144x144",
+      "purpose": " maskable any"
+    },
+    {
+      "src": "./src/image/webapp/icons/192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": " maskable any"
+    },
+    {
+      "src": "./src/image/webapp/icons/512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": " maskable any"
+    }
+  ]
+}

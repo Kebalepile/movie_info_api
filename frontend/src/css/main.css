@@ -1,10 +1,12 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
+
 :root {
   --main: #252525;
   --c2: #1c242c;
   --c3: #161c23;
   --c4: #8d8a8a;
   --c5: #0c0c0ce1;
-  --c6: lime;
+  --c6: #00ff00;
   --c7: #b9b9b9;
 }
 * {
@@ -510,7 +512,6 @@ footer a {
   text-align: center;
   width: 70px;
 }
-@import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
 
 footer {
   display: flex;

@@ -1,33 +1,31 @@
 import nav from "./components/navigation/nav.js";
 nav();
 
-// import {
-//   Home,
-//   Request,
-//   Recommended,
-//   Trending,
-// } from "./components/cimaTube/api.js";
-// import { apiUrl, options } from "./components/cimaTube/url.js";
-// import { Decrypt } from "./utils/encryption/encrypt.js";
-// import { RequestData } from "./components/cimaTube/Request.js";
-// (async () => {
-//   let res = await Home(apiUrl, options);
-//   console.log("Home");
-//   console.table(res);
+let pwaInstallPrompt;
 
-//   res = await Trending(apiUrl, options);
-//   console.log("Trending");
-//   console.table(res);
+window.addEventListener('beforeinstallprompt', (e) => {
+  // Prevent Chrome 67 and earlier from automatically showing the prompt
+  e.preventDefault();
+  // Stash the event so it can be triggered later.
+  pwaInstallPrompt = e;
+});
+const installButton = document.querySelector('#install')
 
-//   res = await Recommended(apiUrl, options);
-//   console.log("Recommended");
-//   console.table(res);
+installButton.addEventListener("click", (e) => {
+  if (pwaInstallPrompt) {
+    // Show the prompt
+    pwaInstallPrompt.prompt();
+    // Wait for the user to respond to the prompt
+    pwaInstallPrompt.userChoice.then((choiceResult) => {
+      if (choiceResult.outcome === 'accepted') {
+        console.log('User accepted the A2HS prompt');
+      } else {
+        console.log('User dismissed the A2HS prompt');
+      }
+      pwaInstallPrompt = null;
+    });
+  }
+  e.target.blur();
+});
 
-//     const data = RequestData({
-//       query: "Prey",
-//       email: "kmoko@gmail.com",
-//       mediaHandle: "@twiter/kokij",
-//     });
-//     res = await Request(apiUrl, data);
-//     console.table(res);
-// })();
+  
