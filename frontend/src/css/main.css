@@ -24,6 +24,7 @@ body {
   overflow-x: hidden;
 }
 
+
 /* banner styles */
 #welcome_banner {
   position: absolute;
@@ -196,14 +197,19 @@ body {
   top: 0;
   left: 0;
   right: 0;
-  height: 60px;
+  height: 70px;
   border-bottom: 5px;
   background: var(--c3);
   width: 100dvw;
   display: flex;
-  justify-content: flex-start;
   z-index: 6;
   cursor: pointer;
+}
+#logo{
+  width:60px;
+  height:60px;
+  border-radius: 50%;
+  margin:1px 1px 1px 90px;
 }
 #navigation a {
   color: inherit;
@@ -243,7 +249,7 @@ label {
 ul {
   position: absolute;
   top: 100%;
-  left: 10%;
+  left: 26%;
   background-color: inherit;
   list-style: none;
   display: none;
@@ -518,6 +524,17 @@ footer {
 
 /* small tablet to mobile devices screen */
 @media screen and (max-width: 440px) {
+  ul {
+ 
+  left: 25%;
+  
+}
+#logo{
+  
+  background:rgb(255, 255, 255);
+  
+  margin:1px 1px 1px 20px;
+}
   .movies_slide h1 {
     width: 300px;
   }

@@ -12,6 +12,14 @@ export default () => {
           classes: "menu",
           children: [
             {
+              type: "img",
+              id: "logo",
+              attributes: {
+                src: "./src/image/icons/favicon.png",
+                alt: "logo image",
+              },
+            },
+            {
               type: "input",
               id: "toggle",
               attributes: { type: "checkbox" },

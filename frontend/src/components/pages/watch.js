@@ -53,10 +53,12 @@ export function watch(videoParams) {
       videoDialog.style.display = "none";
       videoDialog.style.width = "0";
       videoDialog.style.height = "0";
+      durationTrack.style.width = "0%"
     }
   });
 
   // set video attributes.
+
   video.setAttribute("src", videoParams.get("s"));
   video.setAttribute("title", videoParams.get("t"));
   video.setAttribute("poster", videoParams.get("p"));
