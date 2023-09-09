@@ -26,7 +26,6 @@ body {
   overflow-x: hidden;
 }
 
-
 /* banner styles */
 #welcome_banner {
   position: absolute;
@@ -104,7 +103,7 @@ body {
   margin: 3px;
   cursor: pointer;
 
-  animation: wave 3s linear infinite;
+  animation: wave 3s ease-in-out infinite;
   background: linear-gradient(90deg, #241c1c, #1c242c, #252525, #161c23);
   background-size: 400% 400%;
 }
@@ -155,7 +154,27 @@ body {
   font-size: 50px;
   color: limegreen;
 }
-
+#download-wrapper {
+  width: inherit;
+  height: inherit;
+  border-radius: inherit;
+  position: absolute;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-end;
+}
+#download {
+  background-color: rgb(27, 116, 27);
+  color: white;
+  border: none;
+  border-radius: 3px;
+  height: 30px;
+  width: 80px;
+  cursor: pointer;
+  position: absolute;
+  margin: 0 0 10px 5px;
+  z-index: 5;
+}
 .poster img {
   width: inherit;
   height: inherit;
@@ -207,11 +226,11 @@ body {
   z-index: 6;
   cursor: pointer;
 }
-#logo{
-  width:60px;
-  height:60px;
+#logo {
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
-  margin:1px 1px 1px 90px;
+  margin: 1px 1px 1px 90px;
 }
 #navigation a {
   color: inherit;
@@ -526,16 +545,13 @@ footer {
 /* small tablet to mobile devices screen */
 @media screen and (max-width: 440px) {
   ul {
- 
-  left: 25%;
-  
-}
-#logo{
-  
-  background:rgb(255, 255, 255);
-  
-  margin:1px 1px 1px 20px;
-}
+    left: 25%;
+  }
+  #logo {
+    background: rgb(255, 255, 255);
+
+    margin: 1px 1px 1px 20px;
+  }
   .movies_slide h1 {
     width: 300px;
   }

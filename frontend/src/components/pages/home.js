@@ -2,6 +2,7 @@ import { Trending, Recommended } from "../cimaTube/api.js";
 import { apiUrl, options } from "../cimaTube/url.js";
 import { watch } from "./watch.js";
 import { toggleVideoDialog } from "../../utils/features.js";
+import download from "../../utils/download.js";
 /**
  * @description The `Home` function is an asynchronous function that updates the home page of a website with trending and recommended content.
  *  The function first selects the `trending` & `recommended` element and then calls the `Trending` function to get an array of currently streaming content.
@@ -67,10 +68,14 @@ function createPoster(parent, data) {
       try {
         const observer = new IntersectionObserver((entries) => {
           entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              const img = entry.target;
-              img.src = d.poster;
-              observer.unobserve(img);
+            try {
+              if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = d.poster;
+                observer.unobserve(img);
+              }
+            } catch (err) {
+              console.error(err.message);
             }
           });
         });
@@ -85,15 +90,28 @@ function createPoster(parent, data) {
         playButton.textContent = "▶";
         posterShadow.appendChild(playButton);
 
+        const downloadWrapper = document.createElement("div");
+        downloadWrapper.setAttribute("id", "download-wrapper");
+
+        const downloadButton = document.createElement("button");
+        downloadButton.textContent = "download";
+        downloadButton.setAttribute("id", "download");
+        downloadButton.addEventListener("click", () => {
+          download(d?.src, d?.title);
+        });
+        downloadWrapper.appendChild(downloadButton);
+
         const img = document.createElement("img");
         img.src = d.poster || "#";
         img.alt = "Movie poster";
         img.setAttribute("loading", "lazy");
         observer.observe(img);
+
         const caption = document.createElement("figcaption");
         caption.textContent = d?.title;
 
         poster.appendChild(posterShadow);
+        poster.appendChild(downloadWrapper);
         poster.appendChild(img);
         poster.appendChild(caption);
         poster.setAttribute("title", d?.title);
@@ -116,21 +134,3 @@ function createPoster(parent, data) {
 }
 
 Home();
-
-// (function () {
-//   let intervalId = setInterval(function a() {
-//       try {
-//           (function b(i) {
-//               if (('' + (i / i)).length !== 1 || i % 20 === 0) {
-//                   (function () { }).constructor('debugger')()
-//               } else {
-//                   debugger
-//               }
-//               b(++i)
-//           })(0)
-//       } catch (e) {
-//           clearInterval(intervalId);
-//           intervalId = setInterval(a);
-//       }
-//   });
-// })();
