@@ -8,7 +8,6 @@ import {
   mediaSession,
   videoTrackTime,
   videoSettings,
-  screenChange,
   muteVolume,
   contextmenu,
   skipVideoBackward,
@@ -40,7 +39,6 @@ export function watch(videoParams) {
 
   closeDialog.addEventListener("click", (e) => {
     try {
-      container.style.display = "none";
       closeDialog.style.display = "none";
       if (Number.isNaN(video.duration)) {
         video.pause();
@@ -79,12 +77,6 @@ export function watch(videoParams) {
   /**@description backforward click event */
   skipBackward.addEventListener("click", () => {
     skipVideoBackward(video);
-  });
-  // document fullscreen change.
-  const container = document.querySelector("#video-container");
-
-  document.addEventListener("fullscreenchange", () => {
-    screenChange(container);
   });
 
   const handletrackVideoTime = () => {

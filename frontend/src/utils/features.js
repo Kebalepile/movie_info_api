@@ -81,11 +81,17 @@ export function mediaTrackTime(mediaTime) {
  * @description toggle video between small and fullscreen
  */
 export function toggleFullScreen(container) {
+  const elem = document.querySelector("#video-container");
   try {
     if (document.fullscreenElement !== container) {
       container.requestFullscreen();
+      elem.style.width = "95dvw";
+      elem.style.height = "95dvh";
     } else if (document.exitFullscreen) {
+      elem.style.width ="inherit";
+      elem.style.height ="inherit";
       document.exitFullscreen();
+      
     }
   } catch (err) {
     console.log(err.message);
@@ -158,24 +164,7 @@ export function videoSettings() {
     console.error(err.message);
   }
 }
-/**
- * @param {Elment} container
- * @param {Object} defaultStyles
- * @description detect document fullscreen change and toggle video container to full screen
- */
-export function screenChange(container) {
-  try {
-    const settingsControls = document.querySelector("#settings-controls");
-    const settingsIcon = settings.querySelector("img");
-    let showModal = true;
-    settingsIcon.addEventListener("click", () => {
-      settingsControls.style.display = showModal ? "block" : "none";
-      showModal = !showModal;
-    });
-  } catch (err) {
-    console.error(err.message);
-  }
-}
+
 /**
  *@param {Element} video
  *  @description skip video 10s forward
