@@ -7,7 +7,11 @@
  * @descrpiton play pause video
  */
 export function playPauseMedia(video) {
-  video.paused ? video.play() : video.pause();
+  try {
+    video.paused ? video.play() : video.pause();
+  } catch (err) {
+    console.error(err.message);
+  }
 }
 /**
  *
@@ -15,7 +19,11 @@ export function playPauseMedia(video) {
  * @description remove contextmenu of event target
  */
 export function contextmenu(event) {
-  event.preventDefault();
+  try {
+    event.preventDefault();
+  } catch (err) {
+    console.error(err.message);
+  }
 }
 /**
  *
@@ -24,8 +32,12 @@ export function contextmenu(event) {
  * @description change volume of given video object element
  */
 export function volume(media, change) {
-  const currentVolume = Math.min(Math.max(media.volume + change, 0), 1);
-  media.volume = currentVolume;
+  try {
+    const currentVolume = Math.min(Math.max(media.volume + change, 0), 1);
+    media.volume = currentVolume;
+  } catch (err) {
+    console.error(err.message);
+  }
 }
 /**
  *
@@ -33,15 +45,23 @@ export function volume(media, change) {
  * @description mute HTML video volume
  */
 export function muteVolume(video) {
-  video.volume = 0;
+  try {
+    video.volume = 0;
+  } catch (err) {
+    console.error(err.message);
+  }
 }
 
 export function playBackRate(media, change) {
-  const currentPlaybBackRate = Math.min(
-    Math.max(media.playbackRate + change, 0.25),
-    5.0
-  );
-  media.playbackRate = currentPlaybBackRate;
+  try {
+    const currentPlaybBackRate = Math.min(
+      Math.max(media.playbackRate + change, 0.25),
+      5.0
+    );
+    media.playbackRate = currentPlaybBackRate;
+  } catch (err) {
+    console.error(err.message);
+  }
 }
 import { formatTime } from "./time.js";
 /**
@@ -51,7 +71,11 @@ import { formatTime } from "./time.js";
  * @returns string
  */
 export function mediaTrackTime(mediaTime) {
-  return formatTime(Math.floor(mediaTime));
+  try {
+    return formatTime(Math.floor(mediaTime));
+  } catch (err) {
+    console.error(err.message);
+  }
 }
 /**
  * @description toggle video between small and fullscreen
@@ -74,15 +98,19 @@ export function toggleFullScreen(container) {
  * @description toggle video picture in picture mode
  */
 export function pictureInPicture(video) {
-  video.disablePictureInPicture = false;
-  video.disableRemotePlayback = false;
+  try {
+    video.disablePictureInPicture = false;
+    video.disableRemotePlayback = false;
 
-  if (video.nodeName === "VIDEO") {
-    if (video !== document.pictureInPictureElement) {
-      video.requestPictureInPicture();
-    } else {
-      document.exitPictureInPicture();
+    if (video.nodeName === "VIDEO") {
+      if (video !== document.pictureInPictureElement) {
+        video.requestPictureInPicture();
+      } else {
+        document.exitPictureInPicture();
+      }
     }
+  } catch (err) {
+    console.error(err.message);
   }
 }
 /**
@@ -113,17 +141,22 @@ export function videoTrackTime(video, durationTrack, time, stopInterval) {
     time.textContent = `${currentTime} / ${duration}`;
   } catch (err) {
     stopInterval();
+    console.error(err.message);
   }
 }
 /**@description toggle settings Controls */
 export function videoSettings() {
-  const settingsControls = document.querySelector("#settings-controls");
-  const settingsIcon = settings.querySelector("img");
-  let showModal = true;
-  settingsIcon.addEventListener("click", () => {
-    settingsControls.style.display = showModal ? "block" : "none";
-    showModal = !showModal;
-  });
+  try {
+    const settingsControls = document.querySelector("#settings-controls");
+    const settingsIcon = settings.querySelector("img");
+    let showModal = true;
+    settingsIcon.addEventListener("click", () => {
+      settingsControls.style.display = showModal ? "block" : "none";
+      showModal = !showModal;
+    });
+  } catch (err) {
+    console.error(err.message);
+  }
 }
 /**
  * @param {Elment} container
@@ -131,12 +164,16 @@ export function videoSettings() {
  * @description detect document fullscreen change and toggle video container to full screen
  */
 export function screenChange(container) {
-  if (document.fullscreenElement) {
-    container.style.width = "99.5dvw";
-    container.style.height = "99.5dvh";
-  } else {
-    container.style.width = "inherit";
-    container.style.height = "inherit";
+  try {
+    const settingsControls = document.querySelector("#settings-controls");
+    const settingsIcon = settings.querySelector("img");
+    let showModal = true;
+    settingsIcon.addEventListener("click", () => {
+      settingsControls.style.display = showModal ? "block" : "none";
+      showModal = !showModal;
+    });
+  } catch (err) {
+    console.error(err.message);
   }
 }
 /**
@@ -144,14 +181,22 @@ export function screenChange(container) {
  *  @description skip video 10s forward
  */
 export function skipVideoForward(video) {
-  video.currentTime += 10;
+  try {
+    video.currentTime += 10;
+  } catch (err) {
+    console.error(err.message);
+  }
 }
 /**
  *@param {Element} video
  *  @description skip video 10s backward
  */
 export function skipVideoBackward(video) {
-  video.currentTime -= 10;
+  try {
+    video.currentTime -= 10;
+  } catch (err) {
+    console.error(err.message);
+  }
 }
 
 /**
@@ -162,36 +207,44 @@ export function skipVideoBackward(video) {
  * @description Use Broswer  media session api
  */
 export function mediaSession(video, title, imageUrl) {
-  let imageType = "image/png"; // default type
+  try {
+    let imageType = "image/png"; // default type
 
-  if (imageUrl.endsWith(".jpg")) {
-    imageType = "image/jpg";
-  } else if (imageUrl.endsWith(".jpeg")) {
-    imageType = "image/jpeg";
+    if (imageUrl.endsWith(".jpg")) {
+      imageType = "image/jpg";
+    } else if (imageUrl.endsWith(".jpeg")) {
+      imageType = "image/jpeg";
+    }
+
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title,
+      artwork: [
+        {
+          src: imageUrl,
+          sizes: "256x256",
+          type: imageType,
+        },
+      ],
+      artist: undefined,
+      album: undefined,
+    });
+    navigator.mediaSession.setActionHandler("play", () =>
+      playPauseMedia(video)
+    );
+    navigator.mediaSession.setActionHandler("pause", () =>
+      playPauseMedia(video)
+    );
+    navigator.mediaSession.setActionHandler(
+      "seekbackward",
+      () => (video.currentTime -= 10)
+    );
+    navigator.mediaSession.setActionHandler(
+      "seekforward",
+      () => (video.currentTime += 10)
+    );
+  } catch (err) {
+    console.error(err.message);
   }
-
-  navigator.mediaSession.metadata = new MediaMetadata({
-    title,
-    artwork: [
-      {
-        src: imageUrl,
-        sizes: "256x256",
-        type: imageType,
-      },
-    ],
-    artist: undefined,
-    album: undefined,
-  });
-  navigator.mediaSession.setActionHandler("play", () => playPauseMedia(video));
-  navigator.mediaSession.setActionHandler("pause", () => playPauseMedia(video));
-  navigator.mediaSession.setActionHandler(
-    "seekbackward",
-    () => (video.currentTime -= 10)
-  );
-  navigator.mediaSession.setActionHandler(
-    "seekforward",
-    () => (video.currentTime += 10)
-  );
 }
 export function toggleVideoDialog() {
   try {

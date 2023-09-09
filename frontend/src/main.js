@@ -1,31 +1,14 @@
 import nav from "./components/navigation/nav.js";
+import pwaInstallPrompt from "./components/prompts/pwaInstallPrompt.js";
 nav();
+pwaInstallPrompt(document.querySelector("#install"));
 
-let pwaInstallPrompt;
 
-window.addEventListener('beforeinstallprompt', (e) => {
-  // Prevent Chrome 67 and earlier from automatically showing the prompt
-  e.preventDefault();
-  // Stash the event so it can be triggered later.
-  pwaInstallPrompt = e;
-});
-const installButton = document.querySelector('#install')
 
-installButton.addEventListener("click", (e) => {
-  if (pwaInstallPrompt) {
-    // Show the prompt
-    pwaInstallPrompt.prompt();
-    // Wait for the user to respond to the prompt
-    pwaInstallPrompt.userChoice.then((choiceResult) => {
-      if (choiceResult.outcome === 'accepted') {
-        console.log('User accepted the A2HS prompt');
-      } else {
-        console.log('User dismissed the A2HS prompt');
-      }
-      pwaInstallPrompt = null;
-    });
-  }
-  e.target.blur();
-});
-
-  
+// keycodes
+// 13,32,40,101 -> playpause
+// 39 , 102 -> skipforward
+// 37 , 100-> backward
+//  80, 105-> picture in picture
+//  38, 104-> fullscreen
+//  40, 98-> normal screen

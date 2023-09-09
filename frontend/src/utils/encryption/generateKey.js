@@ -7,29 +7,33 @@ import { secret } from "./diphiri.js";
  * @returns unit8Array
  */
 export async function generateKeyFromString(keyString) {
-  let salt = stringToUint8Array(secret.salt); // Choose a fixed salt value or generate one based on your needs
-  let iterations = secret.iteration; // Choose an appropriate number of iterations
+  try {
+    let salt = stringToUint8Array(secret.salt); // Choose a fixed salt value or generate one based on your needs
+    let iterations = secret.iteration; // Choose an appropriate number of iterations
 
-  let importedKey = await crypto.subtle.importKey(
-    "raw",
-    stringToUint8Array(keyString),
-    { name: "PBKDF2" },
-    false,
-    ["deriveBits"]
-  );
+    let importedKey = await crypto.subtle.importKey(
+      "raw",
+      stringToUint8Array(keyString),
+      { name: "PBKDF2" },
+      false,
+      ["deriveBits"]
+    );
 
-  let key = await crypto.subtle.deriveBits(
-    {
-      name: "PBKDF2",
-      salt: salt,
-      iterations: iterations,
-      hash: "SHA-256",
-    },
-    importedKey,
-    256 // 256 bits (32 bytes)
-  );
+    let key = await crypto.subtle.deriveBits(
+      {
+        name: "PBKDF2",
+        salt: salt,
+        iterations: iterations,
+        hash: "SHA-256",
+      },
+      importedKey,
+      256 // 256 bits (32 bytes)
+    );
 
-  return new Uint8Array(key);
+    return new Uint8Array(key);
+  } catch (err) {
+    console.error(err.message);
+  }
 }
 /**
  *
@@ -38,14 +42,18 @@ export async function generateKeyFromString(keyString) {
  * @returns unit8Array
  */
 export function generateIVFromString(ivString) {
-  let iv = stringToUint8Array(ivString);
-  if (iv.length > 12) {
-    iv = iv.subarray(0, 12); // Truncate the IV to 12 bytes if it's longer
-  } else if (iv.length < 12) {
-    let padding = new Uint8Array(12 - iv.length); // Pad the IV with zero bytes if it's shorter
-    iv = new Uint8Array([...iv, ...padding]);
+  try {
+    let iv = stringToUint8Array(ivString);
+    if (iv.length > 12) {
+      iv = iv.subarray(0, 12); // Truncate the IV to 12 bytes if it's longer
+    } else if (iv.length < 12) {
+      let padding = new Uint8Array(12 - iv.length); // Pad the IV with zero bytes if it's shorter
+      iv = new Uint8Array([...iv, ...padding]);
+    }
+    return iv;
+  } catch (err) {
+    console.error(err.message);
   }
-  return iv;
 }
 
 /**
@@ -53,16 +61,20 @@ export function generateIVFromString(ivString) {
  * @return unit8Array
  */
 export async function generateRandomKey() {
-  // Use the Web Crypto API to generate a random 32-byte key for AES-GCM.
-  let key = await window.crypto.subtle.generateKey(
-    {
-      name: "AES-GCM",
-      length: 256, // 32 bytes
-    },
-    true, // whether the key is extractable (i.e., can be used in exportKey)
-    ["encrypt", "decrypt"] // key can be used to encrypt and decrypt
-  );
-  return key;
+  try {
+    // Use the Web Crypto API to generate a random 32-byte key for AES-GCM.
+    let key = await window.crypto.subtle.generateKey(
+      {
+        name: "AES-GCM",
+        length: 256, // 32 bytes
+      },
+      true, // whether the key is extractable (i.e., can be used in exportKey)
+      ["encrypt", "decrypt"] // key can be used to encrypt and decrypt
+    );
+    return key;
+  } catch (err) {
+    consoe.error(err.message);
+  }
 }
 
 /**
@@ -70,8 +82,12 @@ export async function generateRandomKey() {
  * @returns unit8Array
  */
 export function generateRandomIV() {
-  // Use the Web Crypto API to generate a random 12-byte IV for AES-GCM.
-  let iv = new Uint8Array(12); // 12 bytes
-  window.crypto.getRandomValues(iv);
-  return iv;
+  try {
+    // Use the Web Crypto API to generate a random 12-byte IV for AES-GCM.
+    let iv = new Uint8Array(12); // 12 bytes
+    window.crypto.getRandomValues(iv);
+    return iv;
+  } catch (err) {
+    console.error(err.message);
+  }
 }

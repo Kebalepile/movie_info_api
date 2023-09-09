@@ -5,6 +5,7 @@
  * @returns  Correctly formated time.
  */
 function formatTime(time) {
+  try {
     const hours = Math.floor(time / 3600),
       minutes = Math.floor((time - hours * 3600) / 60),
       seconds = time - hours * 3600 - minutes * 60;
@@ -14,6 +15,9 @@ function formatTime(time) {
     }${(minutes && `${minutes.toString().padStart(2, "0")}:`) || "0:"}${seconds
       .toString()
       .padStart(2, "0")}`;
+  } catch (err) {
+    console.error(err.message);
   }
-  
-  export { formatTime };
+}
+
+export { formatTime };
