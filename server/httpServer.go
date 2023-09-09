@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"golang.org/x/time/rate"
 
 	"github.com/Kebalepile/movie_info_api/encrypt"
 	"github.com/Kebalepile/movie_info_api/read"
@@ -15,6 +16,8 @@ var allowedDomains = map[string]bool{
 	"http://127.0.0.1:5500":  true,
 	"http://127.0.0.1:5500/": true,
 }
+var limiter = rate.NewLimiter(300/(24*3600), 300) // Limit to 300 requests per day with a burst of 300
+
 
 // Api end points
 func requestHandler(w http.ResponseWriter, r *http.Request) {
@@ -254,17 +257,25 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(response)
 }
-
+func rateLimit(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        if !limiter.Allow() {
+            http.Error(w, http.StatusText(http.StatusTooManyRequests), http.StatusTooManyRequests)
+            return
+        }
+        next.ServeHTTP(w, r)
+    })
+}
 func Init() {
 
 	// Create Http server
 	serveMux := http.NewServeMux()
-	serveMux.HandleFunc("/", homeHandler)
-	serveMux.HandleFunc("/request", requestHandler)
-	serveMux.HandleFunc("/trending", trendingHandler)
-	serveMux.HandleFunc("/recommended", recommendedHandler)
-	serveMux.HandleFunc("/coming_soon", comingSoonHandler)
-
-	log.Println("Golang API server listeing on port 8080")
-	log.Fatal(http.ListenAndServe(":8080", serveMux))
+    serveMux.HandleFunc("/", homeHandler)
+    serveMux.HandleFunc("/request", requestHandler)
+    serveMux.HandleFunc("/trending", trendingHandler)
+    serveMux.HandleFunc("/recommended", recommendedHandler)
+    serveMux.HandleFunc("/coming_soon", comingSoonHandler)
+    wrappedMux := rateLimit(serveMux)
+    log.Println("Golang API server listening on port 8080")
+    log.Fatal(http.ListenAndServe(":8080", wrappedMux))
 }
