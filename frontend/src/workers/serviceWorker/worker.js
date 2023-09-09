@@ -15,7 +15,7 @@ self.addEventListener("install", (e) => {
   // perform install steps
   e.waitUntil(
     caches.open(cacheName).then((cache) => {
-      console.log("cache is open");
+      // console.log("cache is open");
       return cache.addAll(items);
     })
   );
@@ -63,7 +63,7 @@ self.addEventListener("fetch", (e) => {
           return netWorkResponse;
         })
         .catch((err) => {
-          console.error(err);
+          console.error(err.message);
         });
     })
   );
