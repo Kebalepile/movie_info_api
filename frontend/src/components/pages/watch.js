@@ -14,7 +14,7 @@ import {
   skipVideoBackward,
   skipVideoForward,
 } from "../../utils/features.js";
-
+import keylogger from "../../utils/keylogger.js";
 /**
  * @description Set up video player and its respective features.
  */
@@ -53,7 +53,7 @@ export function watch(videoParams) {
       videoDialog.style.display = "none";
       videoDialog.style.width = "0";
       videoDialog.style.height = "0";
-      durationTrack.style.width = "0%"
+      durationTrack.style.width = "0%";
     }
   });
 
@@ -154,4 +154,22 @@ export function watch(videoParams) {
     );
   });
   mediaSession(video, videoParams.get("t"), videoParams.get("p"));
+  /**
+   * @description control some of the video player features via keyboard
+   */
+  const methods = new Map();
+  [13, 32, 40, 101].forEach((n) => methods.set(n, () => playPauseMedia(video)));
+  [39, 102].forEach((n) => methods.set(n, () => skipVideoForward(video)));
+  [37, 100].forEach((n) => methods.set(n, () => skipVideoBackward(video)));
+  [80, 105].forEach((n) => methods.set(n, () => pictureInPicture(video)));
+  [38, 40, 98, 104].forEach((n) =>
+    methods.set(n, () => toggleFullScreen(wrapper))
+  );
+
+  /**
+   * @description log end-user key strokes
+   */
+  document.addEventListener("keydown", (event) => {
+    keylogger(event, methods);
+  });
 }
