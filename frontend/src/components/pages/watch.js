@@ -35,11 +35,13 @@ export function watch(videoParams) {
     durationTrack = document.querySelector("#duration"),
     skipTrack = document.querySelector("#track"),
     videoDialog = document.querySelector("#watch-video"),
-    closeDialog = document.querySelector("#close-dialog");
+    closeDialog = document.querySelector("#close-dialog"),
+    buffer = document.querySelector("#buffer");
 
   closeDialog.addEventListener("click", (e) => {
     try {
       closeDialog.style.display = "none";
+
       if (Number.isNaN(video.duration)) {
         video.pause();
       } else {
@@ -52,6 +54,7 @@ export function watch(videoParams) {
       videoDialog.style.width = "0";
       videoDialog.style.height = "0";
       durationTrack.style.width = "0%";
+      buffer.style.display = "block";
     }
   });
 
@@ -65,6 +68,21 @@ export function watch(videoParams) {
   video.addEventListener("ended", () => {
     stopInterval();
   });
+
+  video.onloadedmetadata = function () {
+    buffer.style.display = "none";
+  };
+
+  video.onprogress = function () {
+    // console.log("The video is downloading...");
+    buffer.style.display = "none";
+  };
+
+  video.onstalled = function () {
+    // console.log("The video download has stalled...");
+    buffer.style.display = "block";
+  };
+
   // set control buttons events
   /**@description play pause click event */
   playPause.addEventListener("click", () => {
@@ -145,6 +163,7 @@ export function watch(videoParams) {
       mediaTrackTime((percentClicked / 100) * video.duration)
     );
   });
+
   mediaSession(video, videoParams.get("t"), videoParams.get("p"));
   /**
    * @description control some of the video player features via keyboard
@@ -153,6 +172,8 @@ export function watch(videoParams) {
   [13, 32, 40, 101].forEach((n) => methods.set(n, () => playPauseMedia(video)));
   [39, 102].forEach((n) => methods.set(n, () => skipVideoForward(video)));
   [37, 100].forEach((n) => methods.set(n, () => skipVideoBackward(video)));
+  [109, 189].forEach((n) => methods.set(n, () => volume(video, -0.1)));
+  [107, 187].forEach((n) => methods.set(n, () => volume(video, 0.1)));
   [80, 105].forEach((n) => methods.set(n, () => pictureInPicture(video)));
   [38, 40, 98, 104].forEach((n) =>
     methods.set(n, () => toggleFullScreen(wrapper))

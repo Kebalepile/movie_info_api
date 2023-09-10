@@ -282,6 +282,19 @@ input[type="checkbox"]:checked ~ ul {
   display: block;
 }
 /* video player styles */
+#buffer {
+  position: absolute;
+  top: 47%;
+  left: 47%;
+  transform: translate(-50%, -50%);
+  z-index: 12;
+  border: 10px solid #f3f3f32f;
+  border-top: 10px solid #24ff07;
+  border-radius: 50%;
+  width: 90px;
+  height: 90px;
+  animation: spin 2s linear infinite;
+}
 #wrapper {
   width: 90dvw;
   height: 80dvh;
@@ -613,3 +626,31 @@ footer {
     background-position: 0 50%;
   }
 }
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+    border-top: 10px solid #24ff07;
+    transition: border-top 3s ease-in-out;
+  }
+  25% {
+    transform: rotate(90deg);
+
+    border-right: 10px solid #24ff07;
+    transition: border-right 3s ease-in-out;
+  }
+  50% {
+    transform: rotate(170deg);
+
+    border-bottom: 10px solid #24ff07;
+    transition: border-bottom 3s ease-in-out;
+  }
+  100% {
+    transform: rotate(360deg);
+
+    border-left: 10px solid #24ff07;
+    transition: border-left 3s ease-in-out;
+  }
+}
+
+
+

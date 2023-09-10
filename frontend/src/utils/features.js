@@ -88,10 +88,9 @@ export function toggleFullScreen(container) {
       elem.style.width = "95dvw";
       elem.style.height = "95dvh";
     } else if (document.exitFullscreen) {
-      elem.style.width ="inherit";
-      elem.style.height ="inherit";
+      elem.style.width = "inherit";
+      elem.style.height = "inherit";
       document.exitFullscreen();
-      
     }
   } catch (err) {
     console.log(err.message);
