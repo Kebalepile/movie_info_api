@@ -1,7 +1,20 @@
 import nav from "./components/navigation/nav.js";
 import pwaInstallPrompt from "./components/prompts/pwaInstallPrompt.js";
+
 nav();
-pwaInstallPrompt(document.querySelector("#install"));
+
+const installButton = document.querySelector("#install");
+
+pwaInstallPrompt(installButton);
+
+/**
+ * @description remove install button once web app is installed
+ */
+if (window.matchMedia(" (display-mode: standalone)").matches) {
+  // PWA is installed
+
+  if (installButton) installButton.remove();
+}
 // (function () {
 //   let intervalId = setInterval(function a() {
 //       try {
