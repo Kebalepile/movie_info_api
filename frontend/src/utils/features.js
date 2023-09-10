@@ -81,6 +81,10 @@ export function mediaTrackTime(mediaTime) {
  * @description toggle video between small and fullscreen
  */
 export function toggleFullScreen(container) {
+  container.addEventListener("fullscreenerror", (e) => {
+    console.error("an error occurred changing into fullscreen");
+    console.log(e);
+  });
   const elem = document.querySelector("#video-container");
   try {
     if (document.fullscreenElement !== container) {
