@@ -2,27 +2,28 @@ package server
 
 import (
 	"encoding/json"
+	"golang.org/x/time/rate"
 	"log"
 	"net/http"
-	"golang.org/x/time/rate"
 
+	mongo "github.com/Kebalepile/movie_info_api/database"
 	"github.com/Kebalepile/movie_info_api/encrypt"
 	"github.com/Kebalepile/movie_info_api/read"
-	mongo "github.com/Kebalepile/movie_info_api/database"
 )
 
-// for developmnet use only, remove them at production
+// for production
 var allowedDomains = map[string]bool{
-	"http://127.0.0.1:5500":  true,
-	"http://127.0.0.1:5500/": true,
+
+	"https://rustybiskop.github.io":  true,
+	"https://rustybiskop.github.io/": true,
 }
 var limiter = rate.NewLimiter(300/(24*3600), 300) // Limit to 300 requests per day with a burst of 300
-
 
 // Api end points
 func requestHandler(w http.ResponseWriter, r *http.Request) {
 
 	origin := r.Header.Get("Origin")
+	
 
 	if ok := allowedDomains[origin]; !ok {
 		http.Error(w, "Forbidden Not Allowed Origin", http.StatusForbidden)
@@ -77,6 +78,7 @@ func requestHandler(w http.ResponseWriter, r *http.Request) {
 func trendingHandler(w http.ResponseWriter, r *http.Request) {
 
 	origin := r.Header.Get("Origin")
+	
 
 	if ok := allowedDomains[origin]; !ok {
 		http.Error(w, "Forbidden Not Allowed Origin", http.StatusForbidden)
@@ -130,6 +132,7 @@ func trendingHandler(w http.ResponseWriter, r *http.Request) {
 func recommendedHandler(w http.ResponseWriter, r *http.Request) {
 
 	origin := r.Header.Get("Origin")
+	
 
 	if ok := allowedDomains[origin]; !ok {
 		http.Error(w, "Forbidden Not Allowed Origin", http.StatusForbidden)
@@ -182,6 +185,7 @@ func recommendedHandler(w http.ResponseWriter, r *http.Request) {
 func comingSoonHandler(w http.ResponseWriter, r *http.Request) {
 
 	origin := r.Header.Get("Origin")
+	
 
 	if ok := allowedDomains[origin]; !ok {
 		http.Error(w, "Forbidden Not Allowed Origin", http.StatusForbidden)
@@ -234,6 +238,7 @@ func comingSoonHandler(w http.ResponseWriter, r *http.Request) {
 func homeHandler(w http.ResponseWriter, r *http.Request) {
 
 	origin := r.Header.Get("Origin")
+	
 
 	if ok := allowedDomains[origin]; !ok {
 		http.Error(w, "Forbidden Not Allowed Origin", http.StatusForbidden)
@@ -258,24 +263,24 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(response)
 }
 func rateLimit(next http.Handler) http.Handler {
-    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-        if !limiter.Allow() {
-            http.Error(w, http.StatusText(http.StatusTooManyRequests), http.StatusTooManyRequests)
-            return
-        }
-        next.ServeHTTP(w, r)
-    })
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if !limiter.Allow() {
+			http.Error(w, http.StatusText(http.StatusTooManyRequests), http.StatusTooManyRequests)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
 }
 func Init() {
 
 	// Create Http server
 	serveMux := http.NewServeMux()
-    serveMux.HandleFunc("/", homeHandler)
-    serveMux.HandleFunc("/request", requestHandler)
-    serveMux.HandleFunc("/trending", trendingHandler)
-    serveMux.HandleFunc("/recommended", recommendedHandler)
-    serveMux.HandleFunc("/coming_soon", comingSoonHandler)
-    wrappedMux := rateLimit(serveMux)
-    log.Println("Golang API server listening on port 8080")
-    log.Fatal(http.ListenAndServe(":8080", wrappedMux))
+	serveMux.HandleFunc("/", homeHandler)
+	serveMux.HandleFunc("/request", requestHandler)
+	serveMux.HandleFunc("/trending", trendingHandler)
+	serveMux.HandleFunc("/recommended", recommendedHandler)
+	serveMux.HandleFunc("/coming_soon", comingSoonHandler)
+	wrappedMux := rateLimit(serveMux)
+	log.Println("Golang API server listening on port 8080")
+	log.Fatal(http.ListenAndServe(":8080", wrappedMux))
 }
