@@ -3,7 +3,7 @@ package database
 import (
 	"context"
 	"log"
-	"maps"
+	"golang.org/x/exp/maps"
 	"github.com/Kebalepile/movie_info_api/environment"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
